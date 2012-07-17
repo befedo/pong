@@ -1,0 +1,9 @@
+\BOOKMARK [1][-]{section.1}{Aufgabenstellung}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Anforderungen}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Dokumentation}{}% 3
+\BOOKMARK [1][-]{section.3}{Entwicklunghierarchie}{}% 4
+\BOOKMARK [1][-]{section.4}{Entwicklungsstrategie}{}% 5
+\BOOKMARK [2][-]{subsection.4.1}{Hierarchische Strukturierung des Entwurfs}{section.4}% 6
+\BOOKMARK [2][-]{subsection.4.2}{Lokalit\344t der Module und Signale}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.3}{Regul\344re Strukturen}{section.4}% 8
+\BOOKMARK [1][-]{section.5}{Struktureller Entwurf mit Komponenten}{}% 9

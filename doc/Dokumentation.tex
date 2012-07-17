@@ -1,0 +1,183 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[OT2,T2A,T1]{fontenc}
+\usepackage[german]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage{chngcntr}
+\usepackage[vflt]{floatflt}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{makeidx}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{url}
+
+
+\bibliographystyle{unsrt}
+\hyphenation{words}
+\pagestyle{headings}
+\geometry{left=20mm,right=15mm, top=20mm, bottom=20mm}
+
+
+\title{Dokumentation zum Semesterprojekt Programmierbare Logik: Realisierung des Videospiels "Pong"}
+\author{Marc Ludwig, Matthias Springstein}
+\date{\today}
+
+\makeindex
+\begin{document}
+
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Aufgabenstellung}
+\index{Aufgabenstellung}
+Ziel des Semesterprojektes ist es, auf dem Entwicklungsboard DE2-70 von Terasic 
+\footnote{\href{http://www.altera.com/education/univ/materials/boards/de2-70/unv-de2-70-board.html}{Altera Produktbeschreibung}}
+eine Umsetzung des 1972 ertsmals von Atari veröffentlichten Spiels Pong zu implementieren.
+
+Das 1972 von Atari veröffentlichte Pong wurde zum ersten weltweit populären Videospiel und in den 
+1970er-Jahren zunächst auf Geräten in Spielhallen bekannt. Es gilt als Urvater der Videospiele, 
+obgleich schon zuvor Videospiele entwickelt worden waren.\footnote{\href{http://de.wikipedia.org/wiki/Pong}{Artikel in der freien Wikipedia Enziklopädie}}
+
+Das Spielprinzip von Pong ist simpel und ähnelt dem des Tischtennis: Ein Punkt (Ball) bewegt sich 
+auf dem Bildschirm hin und her. Jeder der beiden Spieler steuert einen senkrechten Strich 
+(Schläger), den er mit einem Drehknopf (Paddle) nach oben und unten verschieben kann. Lässt man 
+den Ball am Schläger vorbei, erhält der Gegner einen Punkt.
+
+
+\subsection{Anforderungen}
+\index{Anforderungen}
+\begin{itemize}
+  \item durchgeführte Dokumentation des Projektes (Quellcode und Aufgabenbearbeitung)
+  	\begin{itemize} 
+  	\item Quellcode durch Doxygen 
+  		\footnote{\href{www.doxygen.org}{Projektseite}} 
+  		\footnote{\href{http://de.wikipedia.org/wiki/Doxygen}{Artikel in der freien Wikipedia Enziklopädie}}
+  	\item Aufgabenbearbeitung durch ein PDF Dokument
+  		\footnote{\href{http://www.latex-project.org/}{Projektseite}}
+  		\footnote{\href{http://de.wikipedia.org/wiki/LaTeX}{Artikel in der freien Wikipedia Enziklopädie}}
+  	\end{itemize} 
+  \item funktionale Bedienelemente für beide Spieler
+  \item graphische Darstellung auf einem via VGA angeschloßenen CRT/TFT Monitor
+  \item Quellcode, basierend auf einem durch mehrere Mitarbeitende Personen realisierbarem Konzept, 
+  		welcher kommentiert und dokumentiert ist
+\end{itemize}
+
+
+\section{Dokumentation}
+\index{Dokumentation}
+Die Dokumentation des Semesterprojektes wird mit dem bereits erwähnten Textsatzsystem LaTeX
+durchgeführt und als generierte PDF Datei zur Verfügung gestellt. Eingebundene Abbildungen und 
+Diagramme sind ebenfalls im Dokumentationsverzeichnis enthalten.
+Die mittels Doxygen erstellte Quellcode Dokumentation liegt als HTML-Dokument 
+\footnote{\href{}{LINK ZUR DATEI EINFÜGEN}} vor.
+
+
+\section{Entwicklunghierarchie}
+\index{Entwicklunghierarchie}
+Als Entwicklungsansatz wurde zunächst das Top-Down Modell gewählt, unter dem Aspekt, mit einem
+spätere Bottom-Up Modell den gewählten Ansatz zu verifizieren. Als zu bevorzugendes Entwurfsmuster
+für VHDL Designs ist das Register Transfer Level (im folgenden RTL) gewählt worden.
+
+Charakteristisch für eine RTL-Beschreibung ist die Trennung von Registern und kombinatorischen
+Logikstufen, die jeweils das Eingangssignal der nachfolgenden Registerstufe definieren. Vgl. Abb.
+\ref{fig:RTL-Logic} Der Datenpfad wird somit als Pipeline aufgefasst. Entsprechend sollen beim reinen RTL-Entwurfsstil 
+kombinatorische und getaktete Prozeße streng voneinander getrennt werden.
+
+\begin{figure}[here]
+	\begin{center}
+		\includegraphics[width=0.65 \textwidth]{includes/RTL-Logic.eps}
+		\caption[Darstellung RTL]{Register Transfer Level}
+		\label{fig:RTL-Logic}
+	\end{center}
+\end{figure}
+
+\newpage
+\section{Entwicklungsstrategie}
+\index{Entwicklungsstrategie}
+Bezugnehmend auf dem Daten-Steuerpfad Modell \cite{Reichardt}, 
+haben wir uns für folgende Methoden zur Systempartitionierung entschieden.
+
+\begin{itemize}
+  \item Hierarchische Strukturierung des Entwurfs
+  \item Lokalität der Module und Signale
+  \item Reguläre Strukturen
+\end{itemize}
+
+\subsection{Hierarchische Strukturierung des Entwurfs}
+\index{Methoden zur Systempartitionierung}
+Unter Hierarchischer Strukturierung versteht man die Partitionierung einer komplexen Entwurfsaufgabe
+in Teilaufgaben sowie deren weitere Gliederung in noch kleinere Einheiten, solange bis die 
+Teilprobleme mit einfachen Lösungsansätzen zu beschreiben sind. Mit Hilfe von Komponenten 
+(\emph{component}) läßt sich eine hierarchische Problemlösung erreichen. Ergebnis der Synthese ist
+letzlich eine hierarchische Netzliste.
+
+\subsection{Lokalität der Module und Signale}
+\index{Methoden zur Systempartitionierung}
+Dies ist eine Forderung, daß die einzelnen Module zur Lösung der Teilprobleme keine Seiteneffekte
+auf benachtbarte Schaltungsteile aufweisen. Durch Blöcke (\emph{block}) lassen sich innerhalb einer
+Architektur nebenläufige Anweisungen zu Funktionsblöcken zusammenfassen. Innerhalb von Blöcken 
+können lokale Signale definiert werden, die nur innerhalb des Blocks gültig sind.
+
+\subsection{Reguläre Strukturen}
+\index{Methoden zur Systempartitionierung}
+Dies bedeutet die Verwendung möglichst einheitlich aufgebauter Bibliothekskomponenten. Derartig
+reguläre Entwürfe sind einfacher zu beschreiben und zu verifizieren. Prozeduren (\emph{procedure})
+und Funktionen (\emph{function}), die insbesondere auch in übergeordneten Bibliotheken 
+(\emph{library}) oder Design-spezifischen Bibliotheken (\emph{package}) abgelegt werden können,
+dienen dazu, standardisierte Lösungen für häufig auftretende Probleme zu verwenden.
+
+\vspace{10mm}
+Zunächst wird die Problemstellung in einzelne Funktionsblöcke gegliedert. Sollten diese noch nicht 
+überschaubar genug sein, so sind diese weiter aufzuteilen Anschließend werden alle zwischen den
+Funktionsblöcken erforderlichen Schnittstellensignale mit Signalflußrichtung und Datentyp 
+festgelegt. Jeder Funktionsblock wird als Komponente betrachtet.
+
+\begin{figure}[here]
+	\begin{center}
+		\includegraphics[width=0.25 \textwidth]{includes/Partitionierung.eps}
+		\caption[Ablaufplan Partitionierung]{Ablaufplan zur Erstellung der Partitionierung eines digitalen Systems}
+		\label{fig:Partitionierung}
+	\end{center}
+\end{figure}
+
+\section{Struktureller Entwurf mit Komponenten}
+\index{Struktureller Entwurf}
+In diesem Abschnitt erläutern wir nun, wie der strukturelle Entwurf digitaler Systeme auf Basis vom
+vorangegangen eingeführten hierarchisch aufgebauten \emph{entity/architecture}-Paaren realisiert wird.
+In der übergeordneten Ebene wird dazu ein Strukturmodell formuliert, in dem diese Paare als 
+Komponenten zu einer größeren Schaltung zusammengefaßt werden. Sie enthalten entweder die 
+Verhaltensbeschreibungen digitaler Funktionen, oder sie bestehen wiederum aus Strukturbeschreibungen
+einer hierarchisch niedrigeren Stufe. \cite{Reichardt}
+
+Mit dem VHDL-Strukturbeschreibungsstil werden in einer Top-Entity die Signalkopplungen von mehreren
+Komponenten in einer Architektur erzeugt. Jede Komponente bezieht sich somit auf eine untergeordnete
+\emph{entity} mit mindestens einer dazugehörigen \emph{architecture}. In der Top-Entity sind deshalb 
+nur die Schnittstellen der einzelnen Komponenten untereinander und zu Systemgrenzen Sichtbar und die
+Top-Entity stellt somit eine textuelle Formulierung eines Blockschaltbildes dar. Welches von den
+meisten Synthesewerkzeugen über eine Schaltplanausgabe automatisch erstellt werden kann.
+\cite{Quartus-Manual} \cite{ISE-Manual} Mit diesem Ansatz wird dann ein Top-Down Entwurf verfolgt.
+
+\vspace{10mm}
+In der nun Vorliegenden strukturellen Architektur der Top-Entity werden die zu nutzenden Komponenten
+zuerst mit ihren Schnittstellen deklariert und im Architekturrumpf instanziiert. In dieser Instanz
+werden die Komponentenanschlüsse durch interne Koppelsignale bzw. durch Signale aus der
+Schnittstellenliste der Top-Entity verdrahtet.
+Zum leichteren Verständnis kann man sich Analog einen Hardwarebezug mit dem 
+"`Board-Socket-Chip-Modell"'\cite{Perry} vorstellen. Hier repräsentiert die Top-Entity eine zu 
+modelierende Platine (Board). Die Komponentendeklaration macht den IC-Typ mit seinen Anschlüßen 
+bekannt. Wobei eine Komponenteninstanziierung dem Einlöten eines IC-Sockels (Socket) entspricht.
+Mit der Konfiguration werden im letzten Schritt die IC-Sockel mit ICs bestückt, welche durch ihre 
+speziellen \emph{entity/architecture}-Kombinationen die Funktionalität der Platine bestimmen.
+\cite{Reichardt}
+
+
+\newpage
+\bibliography{library}
+\listoffigures
+\printindex
+\end{document}
