@@ -1,5 +1,6 @@
- *~
- *.o
- doc/html/
- doc/latex/
- doc/*.tmp
+doc/Dokumentation.pdf
+*~
+*.o
+doc/html/
+doc/latex/
+doc/*.tmp
