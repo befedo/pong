@@ -1,4 +1,5 @@
- *.*~
+ *~
  *.o
- html/
- latex/
+ doc/html/
+ doc/latex/
+ doc/*.tmp
