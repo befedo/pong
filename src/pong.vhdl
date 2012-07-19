@@ -32,7 +32,7 @@ entity PONG is
         --! Sync Ausgang zum DAC
         VGA_SYNC: out std_logic
     );
-end entity;
+end entity PONG;
 
 
 architecture PONG_ARC of PONG is
@@ -41,4 +41,4 @@ architecture PONG_ARC of PONG is
 begin
 
 
-end architecture;
+end architecture PONG_ARC;
