@@ -30,8 +30,9 @@ end component PONG;
 for all: PONG use entity work.PONG(PONG_ARC);
 
 begin
-PONG_INST: PONG port map(CLK, RESET, PADDLE_PLAYER1, PADDLE_PLAYER2, H_SYNC, V_SYNC, 
-                         RED(9 downto 0),GREEN(9 downto 0),BLUE(9 downto 0), VGA_BLANK,
-                         VGA_CLOCK,VGA_SYNC);
+PONG_INST: PONG 
+    port map(CLK, RESET, PADDLE_PLAYER1, PADDLE_PLAYER2, H_SYNC, V_SYNC, 
+             RED(9 downto 0),GREEN(9 downto 0),BLUE(9 downto 0), VGA_BLANK,
+             VGA_CLOCK,VGA_SYNC);
 
 end architecture PONG_ARC_TEST;
