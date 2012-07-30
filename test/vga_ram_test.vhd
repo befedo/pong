@@ -6,8 +6,8 @@ entity VGA_RAM_TEST is
 end entity VGA_RAM_TEST;
 
 architecture VGA_RAM_ARC_TEST of VGA_RAM_TEST is
-signal H_ADDR: bit_vector(9 downto 0);
-signal V_ADDR: bit_vector(8 downto 0);
+signal H_ADR: bit_vector(9 downto 0);
+signal V_ADR: bit_vector(8 downto 0);
 signal DIN: bit_vector(2 downto 0);
 signal DOUT: std_logic_vector(2 downto 0);
 signal CLK,WE,EN: bit;
@@ -23,9 +23,9 @@ component VGA_RAM
     );
     port(
         --! Adresseingang für die Horizontale.
-        H_ADDR: in bit_vector(H_WIDTH-1 downto 0);
+        H_ADR: in bit_vector(H_WIDTH-1 downto 0);
         --! Adresseingang für die Vertikale.
-        V_ADDR: in bit_vector(V_WIDTH-1 downto 0);
+        V_ADR: in bit_vector(V_WIDTH-1 downto 0);
         --! Eingangsleitung zum Parallelen schreiben.
         DIN: in bit_vector(WORD_WIDTH-1 downto 0);
         --! Alle Operationen werden mit denn Takt synchronisiert.
@@ -44,7 +44,7 @@ for all: VGA_RAM use entity work.VGA_RAM(VGA_RAM_ARC);
 begin
 VGA_RAM_INST: VGA_RAM 
     generic map(H_WIDTH=>10,V_WIDTH=>9,WORD_WIDTH=>3)
-    port map(H_ADDR,V_ADDR,DIN,CLK,WE,EN,DOUT);
+    port map(H_ADR,V_ADR,DIN,CLK,WE,EN,DOUT);
     
 CLKGENERATOR: process
 begin
@@ -60,8 +60,8 @@ begin
     EN<='1';
     assert false report "Test von VGA_RAM startet." severity note;
     --Schreiben Testen
-    H_ADDR<="0000000000";
-    V_ADDR<="000000000";
+    H_ADR<="0000000000";
+    V_ADR<="000000000";
     DIN<="000";
     wait for 1 ns;
     WE<='1';
@@ -70,8 +70,8 @@ begin
     WE<='0';
     wait for 10 ns;
     
-    H_ADDR<="0000000001";
-    V_ADDR<="000000000";
+    H_ADR<="0000000001";
+    V_ADR<="000000000";
     DIN<="001";
     wait for 1 ns;
     WE<='1';
@@ -80,8 +80,8 @@ begin
     WE<='0';
     wait for 10 ns;
     
-    H_ADDR<="0000000000";
-    V_ADDR<="000000001";
+    H_ADR<="0000000000";
+    V_ADR<="000000001";
     DIN<="010";
     wait for 1 ns;
     WE<='1';
@@ -90,8 +90,8 @@ begin
     WE<='0';
     wait for 10 ns;
         
-    H_ADDR<="0000000001";
-    V_ADDR<="000000001";
+    H_ADR<="0000000001";
+    V_ADR<="000000001";
     DIN<="011";
     wait for 1 ns;
     WE<='1';
@@ -100,8 +100,8 @@ begin
     WE<='0';
     wait for 10 ns;
         
-    H_ADDR<="0000000100";
-    V_ADDR<="000000001";
+    H_ADR<="0000000100";
+    V_ADR<="000000001";
     DIN<="110";
     wait for 1 ns;
     WE<='1';
@@ -112,24 +112,24 @@ begin
     
     --Lesen Testen
     
-    H_ADDR<="0000000001";
-    V_ADDR<="000000000";
+    H_ADR<="0000000001";
+    V_ADR<="000000000";
     DIN<="000";
     wait for 1 ns;
     wait for 10 ns;
     assert DOUT="001" report "READ Test fehlgeschlagen:1." severity error;
     wait for 10 ns;
     
-    H_ADDR<="0000000000";
-    V_ADDR<="000000000";
+    H_ADR<="0000000000";
+    V_ADR<="000000000";
     DIN<="000";
     wait for 1 ns;
     wait for 10 ns;
     assert DOUT="000" report "READ Test fehlgeschlagen:2." severity error;
     wait for 10 ns;
     
-    H_ADDR<="0000000100";
-    V_ADDR<="000000001";
+    H_ADR<="0000000100";
+    V_ADR<="000000001";
     DIN<="000";
     wait for 1 ns;
     wait for 10 ns;
@@ -137,8 +137,8 @@ begin
     wait for 10 ns;
     
     
-    H_ADDR<="0000000001";
-    V_ADDR<="000000001";
+    H_ADR<="0000000001";
+    V_ADR<="000000001";
     DIN<="000";
     wait for 1 ns;
     wait for 10 ns;
@@ -146,8 +146,8 @@ begin
     wait for 10 ns;
     
     
-    H_ADDR<="0000000000";
-    V_ADDR<="000000001";
+    H_ADR<="0000000000";
+    V_ADR<="000000001";
     DIN<="000";
     wait for 1 ns;
     wait for 10 ns;
@@ -158,8 +158,8 @@ begin
     --ENABLE Testen
     EN<='0';
     
-        H_ADDR<="0000000001";
-    V_ADDR<="000000001";
+        H_ADR<="0000000001";
+    V_ADR<="000000001";
     DIN<="000";
     wait for 1 ns;
     wait for 10 ns;
@@ -167,16 +167,16 @@ begin
     wait for 10 ns;
     
     
-    H_ADDR<="0000000100";
-    V_ADDR<="000000001";
+    H_ADR<="0000000100";
+    V_ADR<="000000001";
     DIN<="000";
     wait for 1 ns;
     wait for 10 ns;
     assert DOUT="010" report "ENABLE Test fehlgeschlagen:2." severity error;
     wait for 10 ns;
     
-    H_ADDR<="0000000001";
-    V_ADDR<="000000000";
+    H_ADR<="0000000001";
+    V_ADR<="000000000";
     DIN<="001";
     wait for 1 ns;
     WE<='1';
@@ -185,8 +185,8 @@ begin
     WE<='0';
     wait for 10 ns;
     
-    H_ADDR<="0000000000";
-    V_ADDR<="000000001";
+    H_ADR<="0000000000";
+    V_ADR<="000000001";
     DIN<="010";
     wait for 1 ns;
     WE<='1';
