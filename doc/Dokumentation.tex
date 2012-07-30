@@ -175,6 +175,33 @@ Mit der Konfiguration werden im letzten Schritt die IC-Sockel mit ICs bestückt,
 speziellen \emph{entity/architecture}-Kombinationen die Funktionalität der Platine bestimmen.
 \cite{Reichardt}
 
+\section{Checkliste zum systematischen Systementwurf}
+\index{Checkliste Systementwurf}
+Basierend auf dem Daten-Steuerpfad-Modell lässt sich Folgende Checkliste aufstellen.
+\begin{itemize}
+	\item 	Identifizieren der Eingangs- und Ausgangssignale des Systems auf einem Blatt Papier
+  			(Eingänge von links, Ausgänge nach rechts)
+	\item 	Analyse der Timing-Randbedingungen:
+  			In welcher zeitlichen Reihenfolge müssen Eingangs- und Ausgangssignale eintreffen bzw. 
+  			generiert werden, um die einzelnen Funktionen des Systems zu realisieren?
+	\item 	Systempartitionierung des Datenpfads:
+  			Welche Komponenten sind zur Lösung von Teilaufgaben geeignet?
+	\item 	Analyse der Datenpfadkomponenten
+  		\begin{itemize}
+  			\item	Blockdiagramm für den Datenpfad:
+					Eine Liste mit erforderlichen lokalen Datenpfadsignalen.
+			\item	Welche Funktionsblöcke sind taksynchron und welche kombinatorisch?
+			\item 	Welche synchronen Komponenten benötigen einen synchronen/asynchronen Reset/Preset?
+			\item 	Analyse aller Datenpfadkomponenten:
+					Welche Steuersignale sind für die verschiedenen Teilfunktionen erforderlich?
+					Welche Statussignale werden erzeugt?
+					Eintragung dieser in die Signalliste und ergänzen des Blockdiagramms.
+			\item	Ergänzung der Datenpfadkomponenten im Blockdiagramm durch eine entsprechende
+					Abhängigkeitsnotation. 
+  		\end{itemize}
+	\item	Ergänzen des Blockdiagramms durch einen Zustandsautomaten für den Steuerpfad. Zunächst
+			reicht ein Funktionsblock, welcher später im VDHL-Code durch zwei Prozeße modelliert wird. 
+\end{itemize}
 
 \newpage
 \bibliography{library}
