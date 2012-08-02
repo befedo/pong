@@ -17,7 +17,7 @@ entity VGA is
 			--! selektiert den grünen Ausgang
 			GREEN,
 			--! selektiert den blauen Ausgang
-			BLUE		: in	STD_LOGIC;
+			BLUE		: in	bit;
 			--! Ausgang Rot
 			RED_OUT,
 			--! Ausgang Grün
