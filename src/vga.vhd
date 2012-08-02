@@ -6,10 +6,10 @@ use  IEEE.STD_LOGIC_UNSIGNED.all;
 ------------------------------------------------------------------------------------------------------
 --! @file	vga.vhd
 --! @brief 	Diese Entity erzeugt die Videosynchronisationssignale für das Video->Monitor Interface,
--- 			sowie die RGB und Sync Signale und kann somit direkt an die VGA-Schnittstelle angeschloßen 
+-- 			sowie die RGB und Sync Signale und kann somit direkt an die VGA-Schnittstelle angeschlossen 
 --			werden.
 ------------------------------------------------------------------------------------------------------
-entity VGA_SYNC is
+entity VGA is
 	PORT(	--! Takteingang
 			CLOCK_50Mhz,
 			--! selektiert den roten Ausgang
@@ -36,10 +36,10 @@ entity VGA_SYNC is
 			PIXEL_ROW,
 			--! Spaltenvektor
 			PIXEL_COLUMN: out STD_LOGIC_VECTOR(9 downto 0));
-end VGA_SYNC;
+end VGA;
 
 
-architecture ARCH of VGA_SYNC is
+architecture ARCH of VGA is
 	signal HORIZ_SYNC, VERT_SYNC, PIXEL_CLOCK_INT : STD_LOGIC;
 	signal VIDEO_ON_INT, VIDEO_ON_V, VIDEO_ON_H : STD_LOGIC;
 	signal H_COUNT, V_COUNT :STD_LOGIC_VECTOR(9 downto 0);
