@@ -158,7 +158,7 @@ begin
     --ENABLE Testen
     EN<='0';
     
-        H_ADR<="0000000001";
+    H_ADR<="0000000001";
     V_ADR<="000000001";
     DIN<="000";
     wait for 1 ns;
