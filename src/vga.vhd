@@ -10,7 +10,7 @@ use  IEEE.STD_LOGIC_UNSIGNED.all;
 --			werden.
 ------------------------------------------------------------------------------------------------------
 entity VGA_SYNC is
-	PORT(	--! Takteingang
+	port(	--! Takteingang
 			CLOCK_50Mhz,
 			--! selektiert den roten Ausgang
 			RED,
