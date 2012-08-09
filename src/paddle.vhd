@@ -47,8 +47,8 @@ UEBERGANGSSCHALTNETZ:
 process (ZUSTAND) is
 begin
 	FOLGEZUSTAND <= Z00;		--Defaultzuweisung
-	STEP <= 0;
-	LEFTNOTRIGHT <= 0;
+	STEP <= '0';
+	LEFTNOTRIGHT <= '0';
 	case ZUSTAND is
 		when Z00 =>		if 		DIN = "10" then			--------Zustandswechsel-----
 		  						FOLGEZUSTAND <= Z01; 
@@ -58,17 +58,17 @@ begin
 								
 		when Z01 =>				FOLGEZUSTAND <= Z10;	--------Zustandswechsel-----
 		when Z02 =>				FOLGEZUSTAND <= Z00;	--------Zustandswechsel-----
-								LEFTNOTRIGHT <= 1;		--------Ausgangsbelegung----
+								LEFTNOTRIGHT <= '1';	--------Ausgangsbelegung----
 		
 		when Z10 =>		if 		DIN = "11" then			--------Zustandswechsel-----
 		  						FOLGEZUSTAND <= Z11; 
 		  				elsif 	DIN = "00" then
 		  				   		FOLGEZUSTAND <= Z02;		  				
 						end if ;
-								STEP <= 1;				--------Ausgangsbelegung----
+								STEP <= '1';			--------Ausgangsbelegung----
 		when Z11 =>				FOLGEZUSTAND <= Z20;	--------Zustandswechsel-----
 		when Z12 =>				FOLGEZUSTAND <= Z10;	--------Zustandswechsel-----
-								LEFTNOTRIGHT <= 1;		--------Ausgangsbelegung----
+								LEFTNOTRIGHT <= '1';	--------Ausgangsbelegung----
 		
 		when Z20 =>		if 		DIN = "01" then			--------Zustandswechsel-----
 		  						FOLGEZUSTAND <= Z21; 
@@ -77,17 +77,17 @@ begin
 						end if ;
 		when Z21 =>				FOLGEZUSTAND <= Z30;	--------Zustandswechsel-----
 		when Z22 =>				FOLGEZUSTAND <= Z20;	--------Zustandswechsel-----
-								LEFTNOTRIGHT <= 1;		--------Ausgangsbelegung----
+								LEFTNOTRIGHT <= '1';	--------Ausgangsbelegung----
 		
 		when Z30 =>		if 		DIN = "00" then			--------Zustandswechsel-----
 		  						FOLGEZUSTAND <= Z31; 
 		  				elsif 	DIN = "11" then
 		  				   		FOLGEZUSTAND <= Z22;		  				
 						end if ;
-								STEP <= 1;				--------Ausgangsbelegung----
+								STEP <= '1';			--------Ausgangsbelegung----
 		when Z31 =>				FOLGEZUSTAND <= Z00;	--------Zustandswechsel-----
 		when Z32 =>				FOLGEZUSTAND <= Z30;	--------Zustandswechsel-----
-								LEFTNOTRIGHT <= 1;		--------Ausgangsbelegung----
+								LEFTNOTRIGHT <= '1';	--------Ausgangsbelegung----
 	end case ; 
 end process UEBERGANGSSCHALTNETZ;
 
