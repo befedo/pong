@@ -8,10 +8,6 @@ use  IEEE.STD_LOGIC_1164.all;
 ------------------------------------------------------------------------------------------------------
 
 entity PADDLE is
-	generic (
-			TAKTTEILER		:	natural	:=	1024;
-	) ;  
-	
 	port(	--!	Takteingang
 			CLK_50Mhz,
 			--! Resetleitung

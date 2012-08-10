@@ -25,10 +25,7 @@ signal		GEN_STEP			:	std_logic;
 ----------------------------------------
 --			Komponentendeklaration
 ----------------------------------------
-component PADDLE is   
-	generic (
-			TAKTTEILER		:	natural	:=	1024;
-	);
+component PADDLE is
 	port(	--!	Takteingang
 			CLK_50Mhz,
 			--! Resetleitung
@@ -71,8 +68,8 @@ end process RESETSTATE;
 ----------------------------------------
 ENCODE : process is
 begin
-	GEN_DIN(0) <= '0', '1' after 5 ms, '0' after 10 ms, '1' after 20 ms, '0' after 30 ms, '1' after 40 ms, '0' after 50 ms, '1' after 55 ms, '0' after 65 ms, '1' after 75 ms, '0' after 85 ms, '1' after 95 ms, '0' after 105 ms;
-	GEN_DIN(1) <= '0', '1' after 10 ms, '0' after 20 ms, '1' after 30 ms, '0' after 40 ms, '1' after 50 ms, '0' after 60 ms, '1' after 70 ms, '0' after 80 ms, '1' after 90 ms, '0' after 100 ms, '1' after 110 ms, '0' after 120 ms;
+	GEN_DIN(0) <= '0', '1' after 10 ms, '0' after 20 ms, '1' after 30 ms, '0' after 40 ms, '1' after 50 ms, '0' after 60 ms, '1' after 75 ms, '0' after 85 ms, '1' after 95 ms, '0' after 105 ms, '1' after 115 ms, '0' after 125 ms;
+	GEN_DIN(1) <= '0', '1' after 15 ms, '0' after 25 ms, '1' after 35 ms, '0' after 45 ms, '1' after 55 ms, '0' after 65 ms, '1' after 70 ms, '0' after 80 ms, '1' after 90 ms, '0' after 100 ms, '1' after 110 ms, '0' after 120 ms;
 	wait;
 end process ENCODE;
 
