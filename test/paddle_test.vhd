@@ -21,7 +21,7 @@ signal		GEN_DIN				:	bit_vector(1 downto 0);
 			--! Richtungsvorgabe
 signal		GEN_LEFTNOTRIGHT	:	std_logic;
 			--! Generierter Schritttakt
-signal		GEN_STEP			:	std_logic;
+signal		GEN_STEP			:	std_logic;		
 ----------------------------------------
 --			Komponentendeklaration
 ----------------------------------------

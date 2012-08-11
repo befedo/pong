@@ -44,45 +44,44 @@ process (DIN, ZUSTAND) is
 begin
 ----Defaultzuweisung----
 	STEP <= '0';
-	LEFTNOTRIGHT <= '0';
 ------------------------	
 	case ZUSTAND is
-		when Z00 =>		if 		DIN = "10" then			--------Zustandswechsel-----
-		  						FOLGEZUSTAND <= Z01; 
-		  				elsif 	DIN = "01" then
-		  				   		FOLGEZUSTAND <= Z32;		  				
+		when Z00 =>		--------Zustandswechsel-----
+						if 		DIN = "10" then	FOLGEZUSTAND <= Z01; 
+		  				elsif 	DIN = "01" then	FOLGEZUSTAND <= Z32;		  				
 						end if ;
 								
 		when Z01 =>				FOLGEZUSTAND <= Z10;	--------Zustandswechsel-----
+								LEFTNOTRIGHT <= '0';	--------Ausgangsbelegung----
 		when Z02 =>				FOLGEZUSTAND <= Z00;	--------Zustandswechsel-----
 								LEFTNOTRIGHT <= '1';	--------Ausgangsbelegung----
 		
-		when Z10 =>		if 		DIN = "11" then			--------Zustandswechsel-----
-		  						FOLGEZUSTAND <= Z11; 
-		  				elsif 	DIN = "00" then
-		  				   		FOLGEZUSTAND <= Z02;		  				
+		when Z10 =>		--------Zustandswechsel-----
+						if 		DIN = "11" then	FOLGEZUSTAND <= Z11; 
+		  				elsif 	DIN = "00" then FOLGEZUSTAND <= Z02;		  				
 						end if ;
 								STEP <= '1';			--------Ausgangsbelegung----
 		when Z11 =>				FOLGEZUSTAND <= Z20;	--------Zustandswechsel-----
+								LEFTNOTRIGHT <= '0';	--------Ausgangsbelegung----
 		when Z12 =>				FOLGEZUSTAND <= Z10;	--------Zustandswechsel-----
 								LEFTNOTRIGHT <= '1';	--------Ausgangsbelegung----
 		
-		when Z20 =>		if 		DIN = "01" then			--------Zustandswechsel-----
-		  						FOLGEZUSTAND <= Z21; 
-		  				elsif 	DIN = "10" then
-		  				   		FOLGEZUSTAND <= Z12;		  				
+		when Z20 =>		--------Zustandswechsel-----
+						if 		DIN = "01" then	FOLGEZUSTAND <= Z21; 
+		  				elsif 	DIN = "10" then FOLGEZUSTAND <= Z12;		  				
 						end if ;
 		when Z21 =>				FOLGEZUSTAND <= Z30;	--------Zustandswechsel-----
+								LEFTNOTRIGHT <= '0';	--------Ausgangsbelegung----
 		when Z22 =>				FOLGEZUSTAND <= Z20;	--------Zustandswechsel-----
 								LEFTNOTRIGHT <= '1';	--------Ausgangsbelegung----
 		
-		when Z30 =>		if 		DIN = "00" then			--------Zustandswechsel-----
-		  						FOLGEZUSTAND <= Z31; 
-		  				elsif 	DIN = "11" then
-		  				   		FOLGEZUSTAND <= Z22;		  				
+		when Z30 =>		--------Zustandswechsel-----
+						if 		DIN = "00" then	FOLGEZUSTAND <= Z31; 
+		  				elsif 	DIN = "11" then FOLGEZUSTAND <= Z22;		  				
 						end if ;
 								STEP <= '1';			--------Ausgangsbelegung----
 		when Z31 =>				FOLGEZUSTAND <= Z00;	--------Zustandswechsel-----
+								LEFTNOTRIGHT <= '0';	--------Ausgangsbelegung----
 		when Z32 =>				FOLGEZUSTAND <= Z30;	--------Zustandswechsel-----
 								LEFTNOTRIGHT <= '1';	--------Ausgangsbelegung----
 	end case ; 
