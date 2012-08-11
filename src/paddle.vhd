@@ -40,11 +40,12 @@ begin
 end process ;
 
 UEBERGANGSSCHALTNETZ: 
-process (ZUSTAND) is
+process (DIN, ZUSTAND) is
 begin
-	FOLGEZUSTAND <= Z00;		--Defaultzuweisung
+----Defaultzuweisung----
 	STEP <= '0';
 	LEFTNOTRIGHT <= '0';
+------------------------	
 	case ZUSTAND is
 		when Z00 =>		if 		DIN = "10" then			--------Zustandswechsel-----
 		  						FOLGEZUSTAND <= Z01; 
