@@ -5,7 +5,7 @@ use  IEEE.STD_LOGIC_UNSIGNED.all;
 
 ------------------------------------------------------------------------------------------------------
 --! @file	vga.vhd
---! @brief 	Diese Entity erzeugt die Videosynchronisationssignale für das Video->Monitor Interface,
+--! @brief 	Diese Entity erzeugt die Videosynchronisationssignale fr das Video->Monitor Interface,
 -- 			sowie die RGB und Sync Signale und kann somit direkt an die VGA-Schnittstelle angeschlossen 
 --			werden.
 ------------------------------------------------------------------------------------------------------
@@ -15,13 +15,13 @@ entity VGA is
 			CLOCK_50Mhz,
 			--! selektiert den roten Ausgang
 			RED,
-			--! selektiert den grünen Ausgang
+			--! selektiert den grnen Ausgang
 			GREEN,
 			--! selektiert den blauen Ausgang
-			BLUE		: in	bit;
+			BLUE		: in	std_logic;
 			--! Ausgang Rot
 			RED_OUT,
-			--! Ausgang Grün
+			--! Ausgang Grn
 			GREEN_OUT,
 			--! Ausgang Blau
 			BLUE_OUT,
@@ -71,10 +71,10 @@ VIDEO_PLL port map 	(
 					C0	 	=> PIXEL_CLOCK_INT
 					);
 
---!	VIDEO_ON ist nur HIGH, wenn Bilddaten angezeigt werden, sondt LOW um leere Farbsignale während
---	des Rücklaufs zu vermeiden.
+--!	VIDEO_ON ist nur HIGH, wenn Bilddaten angezeigt werden, sondt LOW um leere Farbsignale whrend
+--	des Rcklaufs zu vermeiden.
 VIDEO_ON_INT <= VIDEO_ON_H and VIDEO_ON_V;
--- Ausgabe für externe Logik
+-- Ausgabe fr externe Logik
 PIXEL_CLOCK <= PIXEL_CLOCK_INT;
 VIDEO_ON <= VIDEO_ON_INT;
 
@@ -82,8 +82,8 @@ process
 begin
 	wait until(PIXEL_CLOCK_INT'EVENT) and (PIXEL_CLOCK_INT='1');
 
---	Generieren der horizontalen und vertikalen Timings H_count zählt: 
---	(Pixel + zusätzliche Zeit für Sync-Signale)
+--	Generieren der horizontalen und vertikalen Timings H_count zhlt: 
+--	(Pixel + zustzliche Zeit fr Sync-Signale)
 -- 
 --  HORIZ_SYNC  ------------------------------------__________--------
 --  H_count     0                 #pixels            sync low      end
@@ -100,8 +100,8 @@ begin
 	else
  	  	HORIZ_SYNC <= '1';
 	end if;
---!	V_COUNT zählt reihen, abwärts:
---	(#Zeilen  + extra Zeit für V sync Signal)
+--!	V_COUNT zhlt reihen, abwrts:
+--	(#Zeilen  + extra Zeit fr V sync Signal)
 --  
 --  VERT_SYNC      -----------------------------------------------_______------------
 --  V_count         0                        last pixel row      V sync low       end
@@ -119,9 +119,9 @@ begin
   		vert_sync <= '1';
 	end if;
 
--- Generieren des VIDEO_ON Signals, während Inhalt angezeigt wird.
+-- Generieren des VIDEO_ON Signals, whrend Inhalt angezeigt wird.
 --! VIDEO_ON = 1 Pixel werden angezeigt
---! VIDEO_ON = 0 Rücklauf - jetzt können Pixelwerte geupdatet werden
+--! VIDEO_ON = 0 Rcklauf - jetzt knnen Pixelwerte geupdatet werden
 	if (H_COUNT < H_PIXELS_ACROSS) then
    		VIDEO_ON_H <= '1';
    		PIXEL_COLUMN <= H_COUNT;
@@ -136,10 +136,10 @@ begin
    		VIDEO_ON_V <= '0';
 	end if;
 
--- Alle Signale über D-Flip Flop's zur verfügung stellen, um ein verschwommenes Bild zu vermeiden.
+-- Alle Signale ber D-Flip Flop's zur verfgung stellen, um ein verschwommenes Bild zu vermeiden.
 		H_SYNC_OUT <= HORIZ_SYNC;
 		V_SYNC_OUT <= VERT_SYNC;
--- RGB Signale beim Rücklauf deaktivieren.
+-- RGB Signale beim Rcklauf deaktivieren.
 		RED_OUT <= RED and VIDEO_ON_INT;
 		GREEN_OUT <= GREEN and VIDEO_ON_INT;
 		BLUE_OUT <= BLUE and VIDEO_ON_INT;
@@ -147,7 +147,7 @@ begin
 end process;
 end ARCH;
 -- -----------------------------------------------------------------
---     Gemeinsame Video-Modi - Pixeltakt und Sync-Zählerwerte     --
+--     Gemeinsame Video-Modi - Pixeltakt und Sync-Zhlerwerte     --
 -- -----------------------------------------------------------------
 --
 --  Modus		Refresh   H-Sync	  Pixel clock  Interlaced?  VESA?
@@ -171,7 +171,7 @@ end ARCH;
 --  1280x1024   74Hz      78.85khz   135.0Mhz         No         No
 --  ----------------------------------------------------------------
 --
--- Kleine Anpassungen der Sync Signale können dazu dienen, das Bild
+-- Kleine Anpassungen der Sync Signale knnen dazu dienen, das Bild
 -- links/rechts (H) oder hoch/runter (V) zu bewegen.
 --
 --

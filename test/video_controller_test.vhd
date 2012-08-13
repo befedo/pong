@@ -19,7 +19,7 @@ signal	SIG_RESET	:	bit;
 component VIDEO_CONTROLLER is   
     port(
         CLK, RESET										: in 	bit;
-        H_SYNC, V_SYNC, VGA_CLOCK, VGA_BLANK, VGA_SYNC	: out 	std_logic
+        H_SYNC, V_SYNC, VGA_CLOCK, VGA_BLANK, VGA_SYNC	: out 	std_logic;
         RED, GREEN, BLUE								: out 	std_logic_vector(9 downto 0)
     );	   
 end component VIDEO_CONTROLLER ; 
@@ -40,7 +40,7 @@ end process SYSTEMTAKT;
 ----------------------------------------
 --			Reset Zustand testen
 ----------------------------------------
-RESETSTATE : process is
+RESETSTATE : process (SIG_RESET) is
 begin
 	SIG_RESET <= '1';
 	wait for 60 ns;
