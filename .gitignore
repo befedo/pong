@@ -4,6 +4,7 @@ doc/.texlipse
 *~
 *-eps-converted-to.pdf
 *.aux
+*.bak
 *.bbl
 *.blg
 *.idx
