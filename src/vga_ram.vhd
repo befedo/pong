@@ -13,14 +13,14 @@ entity VGA_RAM is
        WORD_WIDTH:natural:=3
     );
     port(
-        --! Adresseingang fr die Horizontale.
+        --! Adresseingang für die Horizontale.
         H_ADR: in bit_vector(H_WIDTH-1 downto 0);
-        --! Adresseingang fr die Vertikale.
+        --! Adresseingang für die Vertikale.
         V_ADR: in bit_vector(V_WIDTH-1 downto 0);
         --! Eingangsleitung zum Parallelen schreiben.
         DIN: in bit_vector(WORD_WIDTH-1 downto 0);
         --! Alle Operationen werden mit denn Takt synchronisiert.
-        CLK: in std_logic;
+        CLK: in bit;
         --! Wenn das signal High ist wird das aktuelle Signal am DIN gespeichert. EN muss auch HIGH sein damit ein Effekt auftritt.
         WE: in bit;
         --! Wenn das signal High ist wird der Speicherbaustein aktiv.
