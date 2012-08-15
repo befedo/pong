@@ -20,7 +20,7 @@ entity VGA_RAM is
         --! Eingangsleitung zum Parallelen schreiben.
         DIN: in bit_vector(WORD_WIDTH-1 downto 0);
         --! Alle Operationen werden mit denn Takt synchronisiert.
-        CLK: in std_logic;
+        CLK: in bit;
         --! Wenn das signal High ist wird das aktuelle Signal am DIN gespeichert. EN muss auch HIGH sein damit ein Effekt auftritt.
         WE: in bit;
         --! Wenn das signal High ist wird der Speicherbaustein aktiv.

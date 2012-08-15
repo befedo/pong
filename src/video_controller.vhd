@@ -10,23 +10,23 @@ use ieee.std_logic_1164.all;
 entity VIDEO_CONTROLLER is
     port(
         --! Takteingang
-        CLK: in std_logic;
+        CLK,
         --! Setzt das Spiel zurck
-        RESET: in bit;
+        RESET : in bit;
         --! H-sync Ausgang des VGA Anschlusses
-        H_SYNC: out std_logic;
+        H_SYNC,
         --! V-sync Ausgang des VGA Anschlusses
         V_SYNC: out std_logic;
         --! Rot Werte an den DAC Wandler
-        RED: out std_logic_vector(9 downto 0);
+        RED,
         --! Grn Werte an den DAC Wandler
-        GREEN: out std_logic_vector(9 downto 0);
+        GREEN,
         --! Blau Werte an den DAC Wandler
         BLUE: out std_logic_vector(9 downto 0);
         --! Takt Ausgang zum DAC
-        VGA_CLOCK: out std_logic;
+        VGA_CLOCK,
         --! Blank Ausgang zum DAC
-        VGA_BLANK: out std_logic;
+        VGA_BLANK,
         --! Sync Ausgang zum DAC
         VGA_SYNC: out std_logic
     );
@@ -34,12 +34,14 @@ end entity VIDEO_CONTROLLER;
 
 
 architecture VIDEO_CONTROLLER_ARC of VIDEO_CONTROLLER is
-signal SIG_H_ADR: bit_vector(9 downto 0);
-signal SIG_V_ADR: bit_vector(9 downto 0);	--ge. war vorher 9Bit breit
-signal SIG_DIN: bit_vector(2 downto 0);
-signal SIG_DOUT: std_logic_vector(2 downto 0);
-signal SIG_WE: bit;
-signal SIG_EN: bit_vector(0 downto 0);
+
+signal SIG_CLK, SIG_GND, SIG_VCC			: bit;
+signal SIG_DATA, SIG_DIN					: bit_vector(2 downto 0);
+signal SIG_TMP_DATA							: std_logic_vector(2 downto 0);
+signal SIG_H_ADR, SIG_V_ADR					: bit_vector(9 downto 0);
+signal SIG_TMP_H_ADR, SIG_TMP_V_ADR			: std_logic_vector(9 downto 0);
+signal SIG_H_SYNC, SIG_V_SYNC, SIG_VGA_CLK	: std_logic;
+
 
 component VGA_RAM    
     generic(
@@ -58,7 +60,7 @@ component VGA_RAM
         --! Eingangsleitung zum Parallelen schreiben.
         DIN: in bit_vector(WORD_WIDTH-1 downto 0);
         --! Alle Operationen werden mit denn Takt synchronisiert.
-        CLK: in std_logic;
+        CLK: in bit;
         --! Wenn das signal High ist wird das aktuelle Signal am DIN gespeichert. EN muss auch HIGH sein damit ein Effekt auftritt.
         WE: in bit;
         --! Wenn das signal High ist wird der Speicherbaustein aktiv.
@@ -68,34 +70,33 @@ component VGA_RAM
     );
 end component VGA_RAM;
 
-
-signal  SIG_RED, SIG_GREEN, SIG_BLUE			                   : bit;
-signal  SIG_RED_OUT, SIG_GREEN_OUT, SIG_BLUE_OUT, 
-        SIG_H_SYNC_OUT, SIG_V_SYNC_OUT, 
-        SIG_VIDEO_ON, SIG_PIXEL_CLOCK, SIG_CLK                  : std_logic;
-signal  TMP_PIXEL_ROW, TMP_PIXEL_COLUMN                         : std_logic_vector(9 downto 0);
-signal  TMP_EN																	 : std_logic_vector(0 downto 0);				  
-
+				
 component VGA is   
-          port( RED, GREEN, BLUE, CLOCK_50Mhz 						 : in std_logic;
-					 RED_OUT, GREEN_OUT, BLUE_OUT, H_SYNC_OUT, 
-                V_SYNC_OUT, VIDEO_ON, PIXEL_CLOCK               : out std_logic;
-                PIXEL_ROW, PIXEL_COLUMN                         : out std_logic_vector(9 downto 0)
+          port( RED, GREEN, BLUE, CLOCK_50Mhz				: in bit;
+				RED_OUT, GREEN_OUT, BLUE_OUT, H_SYNC_OUT, 
+                V_SYNC_OUT, VIDEO_ON, PIXEL_CLOCK			: out std_logic;
+                PIXEL_ROW, PIXEL_COLUMN						: out std_logic_vector(9 downto 0)
           ); 
 end component VGA ; 
+
 
 for all: VGA_RAM use entity work.VGA_RAM(VGA_RAM_ARC);
 for all: VGA use entity work.VGA(ARCH);
 
+
 begin
 -- Takt auf beide Komponente -> 50MHz
 SIG_CLK <= CLK;
-TMP_EN  <= to_stdlogicvector(SIG_EN);
-TMP_PIXEL_ROW <= to_stdlogicvector(SIG_H_ADR);
-TMP_PIXEL_COLUMN <= to_stdlogicvector(SIG_V_ADR);
+SIG_GND <= '0';
+SIG_VCC <= '1';
+SIG_DIN <= "000";
+-- Temporre Signale da Quartus konvertierungen in der Port Map nicht zu lt
+SIG_TMP_DATA <= to_stdlogicvector(SIG_DATA);
+SIG_TMP_H_ADR <= to_stdlogicvector(SIG_H_ADR);
+SIG_TMP_V_ADR <= to_stdlogicvector(SIG_V_ADR);
 
-GEN_RAM : VGA_RAM 	port map( H_ADR => SIG_H_ADR, V_ADR => SIG_V_ADR(8 downto 0), DIN => SIG_DIN, CLK => SIG_CLK, WE => SIG_WE, EN => SIG_EN(0), DOUT => SIG_DOUT );
-GEN_VGA : VGA		port map( CLOCK_50Mhz => SIG_CLK, RED => SIG_DOUT(0), GREEN => SIG_DOUT(1), BLUE => SIG_DOUT(2), RED_OUT => OPEN, GREEN_OUT => OPEN, BLUE_OUT => OPEN, H_SYNC_OUT => OPEN, V_SYNC_OUT => OPEN, VIDEO_ON => TMP_EN(0), PIXEL_CLOCK => OPEN, PIXEL_ROW => TMP_PIXEL_ROW, PIXEL_COLUMN => TMP_PIXEL_COLUMN );
+GEN_RAM : VGA_RAM 	port map( H_ADR => SIG_H_ADR, V_ADR => SIG_V_ADR(8 downto 0), DIN => SIG_DIN, CLK => SIG_CLK, WE => SIG_GND, EN => SIG_VCC, DOUT => SIG_TMP_DATA );
+GEN_VGA : VGA		port map( CLOCK_50Mhz => SIG_CLK, RED => SIG_DATA(0), GREEN => SIG_DATA(1), BLUE => SIG_DATA(2), RED_OUT => OPEN, GREEN_OUT => OPEN, BLUE_OUT => OPEN, H_SYNC_OUT => SIG_H_SYNC, V_SYNC_OUT => SIG_V_SYNC, VIDEO_ON => OPEN, PIXEL_CLOCK => SIG_VGA_CLK, PIXEL_ROW => SIG_TMP_H_ADR, PIXEL_COLUMN => SIG_TMP_H_ADR );
 
 
 
