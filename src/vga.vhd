@@ -5,7 +5,7 @@ use  IEEE.STD_LOGIC_UNSIGNED.all;
 
 ------------------------------------------------------------------------------------------------------
 --! @file	vga.vhd
---! @brief 	Diese Entity erzeugt die Videosynchronisationssignale für das Video->Monitor Interface,
+--! @brief 	Diese Entity erzeugt die Videosynchronisationssignale fr das Video->Monitor Interface,
 -- 			sowie die RGB und Sync Signale und kann somit direkt an die VGA-Schnittstelle angeschlossen 
 --			werden.
 ------------------------------------------------------------------------------------------------------
@@ -15,13 +15,13 @@ entity VGA is
 			CLOCK_50Mhz,
 			--! selektiert den roten Ausgang
 			RED,
-			--! selektiert den grünen Ausgang
+			--! selektiert den grnen Ausgang
 			GREEN,
 			--! selektiert den blauen Ausgang
-			BLUE		: in	bit;
+			BLUE		: in	std_logic;
 			--! Ausgang Rot
 			RED_OUT,
-			--! Ausgang Grün
+			--! Ausgang Grn
 			GREEN_OUT,
 			--! Ausgang Blau
 			BLUE_OUT,
@@ -36,26 +36,30 @@ entity VGA is
 			--! Zeilenvektor
 			PIXEL_ROW,
 			--! Spaltenvektor
-			PIXEL_COLUMN: out STD_LOGIC_VECTOR(9 downto 0));
+			PIXEL_COLUMN: out STD_LOGIC_VECTOR(11 downto 0));
 end VGA;
 
 
 architecture ARCH of VGA is
-	signal HORIZ_SYNC, VERT_SYNC, PIXEL_CLOCK_INT : STD_LOGIC;
-	signal VIDEO_ON_INT, VIDEO_ON_V, VIDEO_ON_H : STD_LOGIC;
-	signal H_COUNT, V_COUNT :STD_LOGIC_VECTOR(9 downto 0);
+	signal 	HORIZ_SYNC, VERT_SYNC, PIXEL_CLOCK_INT,
+			VIDEO_ON_INT, VIDEO_ON_V, VIDEO_ON_H 	: std_logic;
+	signal 	SIG_CLK, SIG_RED, SIG_GREEN, SIG_BLUE 	: std_logic;
+	signal 	H_COUNT, V_COUNT 						: std_logic_vector(11 downto 0);
 
--- Horizontale Timings  
-	constant 	H_PIXELS_ACROSS		: Natural := 640;
-	constant 	H_SYNC_LOW			: Natural := 664;
-	constant 	H_SYNC_HIGH			: Natural := 760;
-	constant 	H_END_COUNT			: Natural := 800;
+
+-- Horizontale Timings 
+--1280x1024   110     1280 1320 1480 1728   1024 1029 1036 1077
+--1280x1024   110     1280 1328 1512 1712   1024 1025 1028 1054
+	constant 	H_PIXELS_ACROSS		: Natural := 1600; --640;
+	constant 	H_SYNC_LOW			: Natural := 1666; --664;
+	constant 	H_SYNC_HIGH			: Natural := 1856; --760;
+	constant 	H_END_COUNT			: Natural := 2160; --800;
 -- Vertikale TImings
-	constant 	V_PIXELS_DOWN		: Natural := 480;
-	constant 	V_SYNC_LOW			: Natural := 491;
-	constant 	V_SYNC_HIGH			: Natural := 493;
-	constant 	V_END_COUNT			: Natural := 525;
-	component 	VIDEO_PLL
+	constant 	V_PIXELS_DOWN		: Natural := 1200; --480;
+	constant 	V_SYNC_LOW			: Natural := 1201; --491;
+	constant 	V_SYNC_HIGH			: Natural := 1204; --493;
+	constant 	V_END_COUNT			: Natural := 1250; --525;
+	component 	VGA_PLL
 		port(
 				INCLK0				: in STD_LOGIC  := '0';
 				C0					: out STD_LOGIC 
@@ -65,16 +69,17 @@ architecture ARCH of VGA is
 begin
 
 -- PLL erzeugt die Pixeltaktfrequenz.
-VIDEO_PLL_INST:
-VIDEO_PLL port map 	(
+
+VGA_PLL_INST:
+VGA_PLL port map 	(
 					INCLK0	=> CLOCK_50Mhz,
 					C0	 	=> PIXEL_CLOCK_INT
 					);
 
---!	VIDEO_ON ist nur HIGH, wenn Bilddaten angezeigt werden, sondt LOW um leere Farbsignale während
---	des Rücklaufs zu vermeiden.
+--!	VIDEO_ON ist nur HIGH, wenn Bilddaten angezeigt werden, sondt LOW um leere Farbsignale whrend
+--	des Rcklaufs zu vermeiden.
 VIDEO_ON_INT <= VIDEO_ON_H and VIDEO_ON_V;
--- Ausgabe für externe Logik
+-- Ausgabe fr externe Logik
 PIXEL_CLOCK <= PIXEL_CLOCK_INT;
 VIDEO_ON <= VIDEO_ON_INT;
 
@@ -82,14 +87,14 @@ process
 begin
 	wait until(PIXEL_CLOCK_INT'EVENT) and (PIXEL_CLOCK_INT='1');
 
---	Generieren der horizontalen und vertikalen Timings H_count zählt: 
---	(Pixel + zusätzliche Zeit für Sync-Signale)
+--	Generieren der horizontalen und vertikalen Timings H_count zhlt: 
+--	(Pixel + zustzliche Zeit fr Sync-Signale)
 -- 
 --  HORIZ_SYNC  ------------------------------------__________--------
 --  H_count     0                 #pixels            sync low      end
 --
 	if (H_COUNT = H_END_COUNT) then
-   		H_COUNT <= "0000000000";
+   		H_COUNT <= "000000000000";
 	else
    		H_COUNT <= H_COUNT + 1;
 	end if;
@@ -100,14 +105,14 @@ begin
 	else
  	  	HORIZ_SYNC <= '1';
 	end if;
---!	V_COUNT zählt reihen, abwärts:
---	(#Zeilen  + extra Zeit für V sync Signal)
+--!	V_COUNT zhlt reihen, abwrts:
+--	(#Zeilen  + extra Zeit fr V sync Signal)
 --  
 --  VERT_SYNC      -----------------------------------------------_______------------
 --  V_count         0                        last pixel row      V sync low       end
 --
 	if (V_COUNT >= V_END_COUNT) and (H_COUNT >= H_SYNC_LOW) then
-   		V_COUNT <= "0000000000";
+   		V_COUNT <= "000000000000";
 	elsif (H_COUNT = H_SYNC_LOW) then
    		V_COUNT <= V_COUNT + 1;
 	end if;
@@ -119,9 +124,9 @@ begin
   		vert_sync <= '1';
 	end if;
 
--- Generieren des VIDEO_ON Signals, während Inhalt angezeigt wird.
+-- Generieren des VIDEO_ON Signals, whrend Inhalt angezeigt wird.
 --! VIDEO_ON = 1 Pixel werden angezeigt
---! VIDEO_ON = 0 Rücklauf - jetzt können Pixelwerte geupdatet werden
+--! VIDEO_ON = 0 Rcklauf - jetzt knnen Pixelwerte geupdatet werden
 	if (H_COUNT < H_PIXELS_ACROSS) then
    		VIDEO_ON_H <= '1';
    		PIXEL_COLUMN <= H_COUNT;
@@ -136,10 +141,11 @@ begin
    		VIDEO_ON_V <= '0';
 	end if;
 
--- Alle Signale über D-Flip Flop's zur verfügung stellen, um ein verschwommenes Bild zu vermeiden.
+-- Alle Signale ber D-Flip Flop's zur verfgung stellen, um ein verschwommenes Bild zu vermeiden.
 		H_SYNC_OUT <= HORIZ_SYNC;
 		V_SYNC_OUT <= VERT_SYNC;
--- RGB Signale beim Rücklauf deaktivieren.
+-- RGB Signale beim Rcklauf deaktivieren.
+		-- Konvertierung um Typ Missmatch zu vermeiden
 		RED_OUT <= RED and VIDEO_ON_INT;
 		GREEN_OUT <= GREEN and VIDEO_ON_INT;
 		BLUE_OUT <= BLUE and VIDEO_ON_INT;
@@ -147,7 +153,7 @@ begin
 end process;
 end ARCH;
 -- -----------------------------------------------------------------
---     Gemeinsame Video-Modi - Pixeltakt und Sync-Zählerwerte     --
+--     Gemeinsame Video-Modi - Pixeltakt und Sync-Zhlerwerte     --
 -- -----------------------------------------------------------------
 --
 --  Modus		Refresh   H-Sync	  Pixel clock  Interlaced?  VESA?
@@ -171,7 +177,7 @@ end ARCH;
 --  1280x1024   74Hz      78.85khz   135.0Mhz         No         No
 --  ----------------------------------------------------------------
 --
--- Kleine Anpassungen der Sync Signale können dazu dienen, das Bild
+-- Kleine Anpassungen der Sync Signale knnen dazu dienen, das Bild
 -- links/rechts (H) oder hoch/runter (V) zu bewegen.
 --
 --
