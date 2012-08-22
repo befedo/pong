@@ -246,6 +246,7 @@ Basierend auf dem Daten-Steuerpfad-Modell lässt sich Folgende Checkliste aufste
 
 \section{Umsetzung der Checkpunkte}
 \index{Umsetzung Checkpunkte}
+\subsection{Punkt 1}
 \texttt{Identifizieren der Eingangs- und Ausgangssignale des Systems auf einem Blatt Papier (Eingänge von links, Ausgänge nach rechts)}
 
 Aufgrund dieser Forderung ließ sich Folgende Grafik erstellen:
@@ -256,6 +257,18 @@ Aufgrund dieser Forderung ließ sich Folgende Grafik erstellen:
 		\label{fig:Eingangs- und Ausgangssignale des Systems}
 	\end{center}
 \end{figure}
+
+Welche einen Taktgetriebenen Funktionsblock, mit asynchronen Reset und jeweils zwei (wie auch immer gearteten)
+Eingangsvektoren für beide Bedienelemente darstellt. Als Ausgänge sind die Synchronisationsignale für Zeilen- und Spaltendarstellung, 
+der eigentliche Pixeltakt (VGA clk), ein Ausgang zum deaktivieren der Anzeige (wird in der späteren Realisierung dazu verwendet um 
+Bilddaten in den RAM zu schreiben) sowie die eigentlichen RGB-Signale definiert.
+
+\subsection{Punkt 2}
+\texttt{Analyse der Timing-Randbedingungen: In welcher zeitlichen Reihenfolge müssen Eingangs- und Ausgangssignale
+eintreffen bzw. generiert werden, um die einzelnen Funktionen des Systems zu realisieren?}
+Festzustellen war, dass beide Bedienelemente mit dem Systemtakt abzutasten sind und somit nicht von diesem abhängig sein durfen. 
+Dies wurde in der späteren realisierung mit einer State-Machine realisiert. Die Timing BEdingungen sind zudem sehr komplex und es wird
+auf die weiterführende Literatur verwiesen.\cite{Hamblen}
 
 
 \newpage

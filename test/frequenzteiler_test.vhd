@@ -7,9 +7,9 @@ use  IEEE.STD_LOGIC_UNSIGNED.all;
 --! @brief 	Testbench zur Frequenzteiler Entity.
 ------------------------------------------------------------------------------------------------------
 
-entity FREQUENZTEILER_TB is end FREQUENZTEILER_TB;
+entity FREQUENZTEILER_TEST is end FREQUENZTEILER_TEST;
 
-architecture TESTBENCH of FREQUENZTEILER_TB is
+architecture TESTBENCH of FREQUENZTEILER_TEST is
 constant BITS : natural :=  100;
 
 signal CLK, RESET : bit;
