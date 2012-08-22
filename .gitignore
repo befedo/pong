@@ -13,6 +13,7 @@ doc/.texlipse
 *.lof
 *.log
 *.o
+*.out
 *.project
 *.synctex.gz
 *.toc
