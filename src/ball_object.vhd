@@ -5,24 +5,25 @@ use ieee.numeric_std.all;
 
 entity BALL_OBJECT is
     generic(
-        BALL_TOP_LIMIT: integer range 0 to 149:=0;
-        BALL_BOTTOM_LIMIT: integer range 0 to 149:=149;
-        BALL_LEFT_LIMIT: integer range 0 to 199:=0;
-        BALL_RIGHT_LIMIT:integer range 0 to 199:=199;
-        BALL_X_START: integer range 0 to 199:=0;
-        BALL_Y_START:integer range 0 to 149:=0;
-        BALL_X_START_COUNT: natural:=0;
-        BALL_Y_START_COUNT:natural :=0
+        BALL_TOP_LIMIT: integer range 0 to 1199:=10;
+        BALL_BOTTOM_LIMIT: integer range 0 to 1199:=20;
+        BALL_LEFT_LIMIT: integer range 0 to 1599:=10;
+        BALL_RIGHT_LIMIT:integer range 0 to 1599:=20;
+        BALL_X_START: integer range 0 to 1599:=11;
+        BALL_Y_START:integer range 0 to 1199:=11;
+        BALL_X_START_COUNT: natural:=1000;
+        BALL_Y_START_COUNT:natural :=5000;
+        BALL_DIMENSION:natural:=6
     );
     port(
         --!
-        CLK: in bit;
-        RESET: in bit;
+        CLK: in std_logic;
+        RESET: in std_logic;
         DRAW: out std_logic;
-        V_ADR: in bit_vector(7 downto 0);
-        H_ADR: in bit_vector(7 downto 0);
-        X_CURRENT:out integer range 0 to 199;
-        Y_CURRENT:out integer range 0 to 149
+        V_ADR: in std_logic_vector(11 downto 0);
+        H_ADR: in std_logic_vector(11 downto 0);
+        X_CURRENT:out integer range 0 to 1599;
+        Y_CURRENT:out integer range 0 to 1199
     );
 end entity BALL_OBJECT;
 
@@ -31,8 +32,8 @@ signal OFFSET_X: integer range -1 to 1;
 signal OFFSET_Y: integer range -1 to 1;
 signal COUNT_X: integer;
 signal COUNT_Y: integer;
-signal BALL_X: integer range 0 to 199;
-signal BALL_Y: integer range 0 to 149;
+signal BALL_X: integer range 0 to 1599;
+signal BALL_Y: integer range 0 to 1199;
 begin
 
 MAIN:process(clk,reset)
@@ -80,9 +81,13 @@ MAIN:process(clk,reset)
   X_CURRENT<=BALL_X;
   Y_CURRENT<=BALL_Y;
   
-  AUSGABE:process(H_ADR,V_ADR)
+AUSGABE:process(H_ADR,V_ADR)
+  variable DIFF_BALL_X: integer;
+  variable DIFF_BALL_Y: integer;
   begin
-    if(to_integer(unsigned(to_stdlogicvector(H_ADR)))=BALL_X and to_integer(unsigned(to_stdlogicvector(V_ADR)))=BALL_Y) then
+  DIFF_BALL_X:=(BALL_X-to_integer(unsigned(H_ADR)))*(BALL_X-to_integer(unsigned(H_ADR)));
+  DIFF_BALL_Y:=(BALL_Y-to_integer(unsigned(V_ADR)))*(BALL_Y-to_integer(unsigned(V_ADR)));
+    if((DIFF_BALL_X+DIFF_BALL_Y)<BALL_DIMENSION) then
       DRAW<='1';
     else
       DRAW<='0';
