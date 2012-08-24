@@ -11,6 +11,8 @@ entity BALL_OBJECT is
         BALL_RIGHT_LIMIT:integer range 0 to 1599:=20;
         BALL_X_START: integer range 0 to 1599:=11;
         BALL_Y_START:integer range 0 to 1199:=11;
+        BALL_X_START_2: integer range 0 to 1599:=11;
+        BALL_Y_START_2:integer range 0 to 1199:=11;
         BALL_X_START_COUNT: natural:=1000;
         BALL_Y_START_COUNT:natural :=5000;
         BALL_DIMENSION:natural:=6
@@ -19,6 +21,7 @@ entity BALL_OBJECT is
         --!
         CLK: in std_logic;
         RESET: in std_logic;
+        RESET_2: in std_logic;
         DRAW: out std_logic;
         V_ADR: in std_logic_vector(11 downto 0);
         H_ADR: in std_logic_vector(11 downto 0);
@@ -30,21 +33,28 @@ end entity BALL_OBJECT;
 architecture BALL_OBJECT_ARC of BALL_OBJECT is
 signal OFFSET_X: integer range -1 to 1;
 signal OFFSET_Y: integer range -1 to 1;
-signal COUNT_X: integer;
-signal COUNT_Y: integer;
+signal COUNT_X: natural;
+signal COUNT_Y: natural;
 signal BALL_X: integer range 0 to 1599;
 signal BALL_Y: integer range 0 to 1199;
 begin
 
-MAIN:process(clk,reset)
+MAIN:process(CLK,RESET,RESET_2)
   begin
-  if(reset='1') then
+  if(RESET='1') then
     COUNT_X<=BALL_X_START_COUNT;
     COUNT_Y<=BALL_Y_START_COUNT;
     OFFSET_X<=1;
     OFFSET_Y<=1;
     BALL_X<=BALL_X_START;
     BALL_Y<=BALL_Y_START;
+  elsif(RESET_2='1') then
+    COUNT_X<=BALL_X_START_COUNT;
+    COUNT_Y<=BALL_Y_START_COUNT;
+    OFFSET_X<=-1;
+    OFFSET_Y<=-1;
+    BALL_X<=BALL_X_START_2;
+    BALL_Y<=BALL_Y_START_2;
   elsif(CLK'EVENT and CLK='1') then
     --Ball bewegen
     if(COUNT_X=0) then

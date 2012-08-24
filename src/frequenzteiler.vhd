@@ -15,9 +15,9 @@ entity FREQUENZTEILER is
 	port(		--! Takteingang
 				CLK,
 				--! Reset Leitung 
-				RESET    :   in bit;
+				RESET    :   in std_logic;
 				--! Taktausgang
-				CLKOUT        :   out bit
+				CLKOUT        :   out std_logic
 	);
 end FREQUENZTEILER;
 
