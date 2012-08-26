@@ -18,7 +18,7 @@ entity VGA is
 			--! selektiert den grnen Ausgang
 			GREEN,
 			--! selektiert den blauen Ausgang
-			BLUE		: in	std_logic;
+			BLUE		: in	bit;
 			--! Ausgang Rot
 			RED_OUT,
 			--! Ausgang Grn
@@ -43,8 +43,13 @@ end VGA;
 architecture ARCH of VGA is
 	signal 	HORIZ_SYNC, VERT_SYNC, PIXEL_CLOCK_INT,
 			VIDEO_ON_INT, VIDEO_ON_V, VIDEO_ON_H 	: std_logic;
+<<<<<<< HEAD
 	signal 	SIG_CLK, SIG_RED, SIG_GREEN, SIG_BLUE 	: std_logic;
 	signal 	H_COUNT, V_COUNT 						: std_logic_vector(11 downto 0);
+=======
+	signal 	SIG_CLK, SIG_RED, SIG_GREEN, SIG_BLUE 	: bit_vector(0 downto 0);
+	signal 	H_COUNT, V_COUNT 						: std_logic_vector(9 downto 0);
+>>>>>>> quartus
 
 
 -- Horizontale Timings 
@@ -69,10 +74,18 @@ architecture ARCH of VGA is
 begin
 
 -- PLL erzeugt die Pixeltaktfrequenz.
+<<<<<<< HEAD
 
 VGA_PLL_INST:
 VGA_PLL port map 	(
 					INCLK0	=> CLOCK_50Mhz,
+=======
+SIG_CLK(0) <= CLOCK_50Mhz; 
+
+VIDEO_PLL_INST:
+VIDEO_PLL port map 	(
+					INCLK0	=> to_stdlogicvector(SIG_CLK)(0),
+>>>>>>> quartus
 					C0	 	=> PIXEL_CLOCK_INT
 					);
 
@@ -145,10 +158,20 @@ begin
 		H_SYNC_OUT <= HORIZ_SYNC;
 		V_SYNC_OUT <= VERT_SYNC;
 -- RGB Signale beim Rcklauf deaktivieren.
+<<<<<<< HEAD
 		-- Konvertierung um Typ Missmatch zu vermeiden
 		RED_OUT <= RED and VIDEO_ON_INT;
 		GREEN_OUT <= GREEN and VIDEO_ON_INT;
 		BLUE_OUT <= BLUE and VIDEO_ON_INT;
+=======
+		SIG_RED(0) <= RED;
+		SIG_GREEN(0) <= GREEN;
+		SIG_BLUE(0) <= BLUE;
+		-- Konvertierung um Typ Missmatch zu vermeiden
+		RED_OUT <= to_stdlogicvector(SIG_RED)(0) and VIDEO_ON_INT;
+		GREEN_OUT <= to_stdlogicvector(SIG_GREEN)(0) and VIDEO_ON_INT;
+		BLUE_OUT <= to_stdlogicvector(SIG_BLUE)(0) and VIDEO_ON_INT;
+>>>>>>> quartus
 
 end process;
 end ARCH;
