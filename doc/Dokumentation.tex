@@ -36,12 +36,12 @@
 \section{Aufgabenstellung}
 \index{Aufgabenstellung}
 Ziel des Semesterprojektes ist es, auf dem Entwicklungsboard DE2-70 von Terasic 
-\footnote{\href{http://www.altera.com/education/univ/materials/boards/de2-70/unv-de2-70-board.html}{Altera Produktbeschreibung}}
+\footnote{http://www.altera.com/education/univ/materials/boards/de2-70/unv-de2-70-board.html}
 eine Umsetzung des 1972 ertsmals von Atari veröffentlichten Spiels Pong zu implementieren.
 
 Das 1972 von Atari veröffentlichte Pong wurde zum ersten weltweit populären Videospiel und in den 
 1970er-Jahren zunächst auf Geräten in Spielhallen bekannt. Es gilt als Urvater der Videospiele, 
-obgleich schon zuvor Videospiele entwickelt worden waren.\footnote{\href{http://de.wikipedia.org/wiki/Pong}{Artikel in der freien Wikipedia Enziklopädie}}
+obgleich schon zuvor Videospiele entwickelt worden waren.\footnote{http://de.wikipedia.org/wiki/Pong}
 
 Das Spielprinzip von Pong ist simpel und ähnelt dem des Tischtennis: Ein Punkt (Ball) bewegt sich 
 auf dem Bildschirm hin und her. Jeder der beiden Spieler steuert einen senkrechten Strich 
@@ -55,11 +55,11 @@ den Ball am Schläger vorbei, erhält der Gegner einen Punkt.
   \item durchgeführte Dokumentation des Projektes (Quellcode und Aufgabenbearbeitung)
   	\begin{itemize} 
   	\item Quellcode durch Doxygen 
-  		\footnote{\href{www.doxygen.org}{Projektseite}} 
-  		\footnote{\href{http://de.wikipedia.org/wiki/Doxygen}{Artikel in der freien Wikipedia Enziklopädie}}
+  		\footnote{http://www.doxygen.org} 
+  		\footnote{http://de.wikipedia.org/wiki/Doxygen}
   	\item Aufgabenbearbeitung durch ein PDF Dokument
-  		\footnote{\href{http://www.latex-project.org/}{Projektseite}}
-  		\footnote{\href{http://de.wikipedia.org/wiki/LaTeX}{Artikel in der freien Wikipedia Enziklopädie}}
+  		\footnote{http://www.latex-project.org/}
+  		\footnote{http://de.wikipedia.org/wiki/LaTeX}
   	\end{itemize} 
   \item funktionale Bedienelemente für beide Spieler
   \item graphische Darstellung auf einem via VGA angeschloßenen CRT/TFT Monitor
@@ -246,8 +246,7 @@ Basierend auf dem Daten-Steuerpfad-Modell lässt sich Folgende Checkliste aufste
 
 \section{Umsetzung der Checkpunkte}
 \index{Umsetzung Checkpunkte}
-\subsection{Punkt 1}
-\texttt{Identifizieren der Eingangs- und Ausgangssignale des Systems auf einem Blatt Papier (Eingänge von links, Ausgänge nach rechts)}
+\texttt{Identifizieren der Eingangs- und Ausgangssignale des Systems auf einem Blatt Papier \\ (Eingänge von links, Ausgänge nach rechts)}
 
 Aufgrund dieser Forderung ließ sich Folgende Grafik erstellen:
 \begin{figure}[here]
@@ -258,17 +257,33 @@ Aufgrund dieser Forderung ließ sich Folgende Grafik erstellen:
 	\end{center}
 \end{figure}
 
+\newpage
 Welche einen Taktgetriebenen Funktionsblock, mit asynchronen Reset und jeweils zwei (wie auch immer gearteten)
 Eingangsvektoren für beide Bedienelemente darstellt. Als Ausgänge sind die Synchronisationsignale für Zeilen- und Spaltendarstellung, 
 der eigentliche Pixeltakt (VGA clk), ein Ausgang zum deaktivieren der Anzeige (wird in der späteren Realisierung dazu verwendet um 
 Bilddaten in den RAM zu schreiben) sowie die eigentlichen RGB-Signale definiert.
+\vspace{7.5mm}
 
-\subsection{Punkt 2}
-\texttt{Analyse der Timing-Randbedingungen: In welcher zeitlichen Reihenfolge müssen Eingangs- und Ausgangssignale
-eintreffen bzw. generiert werden, um die einzelnen Funktionen des Systems zu realisieren?}
+\texttt{Analyse der Timing-Randbedingungen:\\In welcher zeitlichen Reihenfolge müssen Eingangs- und Ausgangssignale
+eintreffen bzw. generiert \\ werden, um die einzelnen Funktionen des Systems zu realisieren?}
+\newline
 Festzustellen war, dass beide Bedienelemente mit dem Systemtakt abzutasten sind und somit nicht von diesem abhängig sein durfen. 
-Dies wurde in der späteren realisierung mit einer State-Machine realisiert. Die Timing BEdingungen sind zudem sehr komplex und es wird
-auf die weiterführende Literatur verwiesen.\cite{Hamblen}
+Dies wurde in der späteren realisierung mit einer State-Machine realisiert. Die Timing Bedingungen zur Ansteuerung der VGA-Schnittstelle
+sind zudem sehr komplex und es wird auf die weiterführende Literatur verwiesen.\cite{Hamblen}
+\vspace{7.5mm}
+
+\texttt{Systempartitionierung des Datenpfads:\\Welche Komponenten sind zur Lösung von Teilaufgaben geeignet?}
+\newline
+Zu erwähnen ist, dass wir die generierten Bildpunkte in einem eigens für diesen Zweck konzipierten RAM untergebracht haben (\emph{vga\_ram.vhd})
+welcher hauptsächlich von zwei Elementen bearbeitet wird einem Game-Controller (\emph{game\_controller.vhd}) bzw. dem Video-Controller 
+(\emph{video\_controller.vhd}). Des weiteren entsteht noch eine mit dem quartus Mega-Wizzard erstellte Phasen-Regelschleife, um einen Pixeltackt
+nach gewählter Auflösung zu generieren.
+z.B. 	25,75MHz bei 640x480 Pixeln @ 60Hz
+		162,5MHz bei 1600x1200 Pixeln @ 60Hz.
+Es wurden jeweils VESA zertifizierte Auflösungen gewählt, da diese von den meisten (in der Regel allen) Monitoren unterstützt werden und eine
+Bildwiederholrate von 60Hz, da diese quasi Standard bei den von uns verwendeten TFT-Monitoren war.		
+\vspace{7.5mm}
+
 
 
 \newpage
