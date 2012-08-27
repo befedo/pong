@@ -69,8 +69,8 @@ architecture ARCH of VGA is
 begin
 
 -- PLL erzeugt die Pixeltaktfrequenz.
-VIDEO_PLL_INST:
-VIDEO_PLL port map 	(
+VGA_PLL_INST:
+VGA_PLL port map 	(
 					INCLK0	=> to_stdlogicvector(SIG_CLK)(0),
 					C0	 	=> PIXEL_CLOCK_INT
 					);

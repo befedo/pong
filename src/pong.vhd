@@ -1,6 +1,5 @@
 library ieee;
 use ieee.std_logic_1164.all;
-
 -------------------------------------------------------
 --! @file
 --! @brief PONG Hauptentity 
@@ -40,16 +39,16 @@ architecture PONG_ARC of PONG is
 component GAME_CONTROLLER     
 	port(
         --! 
-        CLK: in std_logic;
-        UP_PLAYER_1: in std_logic;
-        DOWN_PLAYER_1: in std_logic;
-        UP_PLAYER_2: in std_logic;
-        DOWN_PLAYER_2: in std_logic;
+        CLK,
+		  ADR_CLK,
+        UP_PLAYER_1,
+        DOWN_PLAYER_1,
+        UP_PLAYER_2,
+        DOWN_PLAYER_2,
         RESET: in std_logic;
         DOUT: out std_logic_vector(2 downto 0);
         V_ADR: in std_logic_vector(11 downto 0);
-        H_ADR: in std_logic_vector(11 downto 0);
-        ADR_CLK: in std_logic
+        H_ADR: in std_logic_vector(11 downto 0)
     );
 end component GAME_CONTROLLER;
 
@@ -73,12 +72,13 @@ component VIDEO_CONTROLLER is
         VGA_BLANK,
         --! Sync Ausgang zum DAC
         VGA_SYNC: out std_logic;
-        H_ADR: out std_logic_vector(11 downto 0);
-        V_ADR: out std_logic_vector(11 downto 0);
-        DIN: in std_logic_vector(2 downto 0);
-        ADR_CLK: out std_logic
+		  H_ADR: out std_logic_vector(11 downto 0);
+		  V_ADR: out std_logic_vector(11 downto 0);
+		  DIN: in std_logic_vector(2 downto 0);
+		  ADR_CLK: out std_logic
     );
 end component VIDEO_CONTROLLER;
+
 
 for all: VIDEO_CONTROLLER use entity work.VIDEO_CONTROLLER(VIDEO_CONTROLLER_ARC);
 for all: GAME_CONTROLLER use entity work.GAME_CONTROLLER(GAME_CONTROLLER_ARC);

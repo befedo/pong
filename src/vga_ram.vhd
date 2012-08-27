@@ -13,16 +13,16 @@ entity VGA_RAM is
        WORD_WIDTH:natural:=3
     );
     port(
-        --! Adresseingang fr die Horizontale.
+        --! Adresseingang fuer die Horizontale.
         H_ADR: in bit_vector(H_WIDTH-1 downto 0);
-        --! Adresseingang fr die Vertikale.
+        --! Adresseingang fuer die Vertikale.
         V_ADR: in bit_vector(V_WIDTH-1 downto 0);
         --! Eingangsleitung zum Parallelen schreiben.
         DIN: in bit_vector(WORD_WIDTH-1 downto 0);
         --! Alle Operationen werden mit denn Takt synchronisiert.
-        CLK: in bit;
+        CLK,
         --! Wenn das signal High ist wird das aktuelle Signal am DIN gespeichert. EN muss auch HIGH sein damit ein Effekt auftritt.
-        WE: in bit;
+        WE,
         --! Wenn das signal High ist wird der Speicherbaustein aktiv.
         EN: in bit;
         --! Datenausgangsleitung zum Parallelen lesen.
@@ -903,15 +903,15 @@ begin
     begin
         if(EN= '1' ) then
             if (CLK'Event and CLK = '1') then
-                                ADR(V_WIDTH-1 downto 0)<=V_ADR;
-                                ADR(H_WIDTH+V_WIDTH-1 downto V_WIDTH)<=H_ADR;
+                                ADR(V_WIDTH-1 downto 0)<=to_stdlogicvector(V_ADR);
+                                ADR(H_WIDTH+V_WIDTH-1 downto V_WIDTH)<=to_stdlogicvector(H_ADR);
                 if(WE = '1' ) then
-                    MEM_MAIN(to_integer(unsigned(to_stdlogicvector(ADR))))<=to_stdlogicvector(DIN);
+                    MEM_MAIN(to_integer(unsigned(ADR)))<=to_stdlogicvector(DIN);
                 end if;
             end if;
         end if;
     end process;
     
-    DOUT<=MEM_MAIN(to_integer(unsigned(to_stdlogicvector(ADR))));
+    DOUT<=MEM_MAIN(to_integer(unsigned(ADR)));
 
 end architecture VGA_RAM_ARC;
