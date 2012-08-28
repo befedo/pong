@@ -1,3 +1,10 @@
+-------------------------------------------------------
+--! @file field_object.vhd
+--! @brief Diese Datei beinhaltet ein Field Object, dieses dient zum Zeichnen der Spielfeld-Grenzen.
+--! @author Matthias Springsetin
+--! @date 27.08.12
+-------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
@@ -5,24 +12,33 @@ use ieee.numeric_std.all;
 
 entity FIELD_OBJECT is
     generic(
+        --! Obere Spielfeld Grenze
         FIELD_TOP: integer range 0 to 1199:=10;
+        --! Untere Spielfeld Grenze
         FIELD_BOTTOM: integer range 0 to 1199:=120;
+        --! Linke Spielfeld Grenze
         FIELD_LEFT: integer range 0 to 1599:=65;
+        --! Rechte Spielfeld Grenze
         FIELD_RIGHT:integer range 0 to 1599:=85;
+        --! Mittellinie des Spielfeldes
         FIELD_MITTEL:integer range 0 to 1599:=100;
+        --! Breite der Spielfeld Linien
         FIELD_WIDTH:natural:=3
     );
     port(
-        --!
+        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
         DRAW: out std_logic;
+        --! Vertikale Adresse 
         V_ADR: in std_logic_vector(11 downto 0);
-        H_ADR: in std_logic_vector(11 downto 0)
+        --! Horizontale Adresse
+        H_ADR: in std_logic_vector(11 downto 0);
     );
 end entity FIELD_OBJECT;
 
 architecture FIELD_OBJECT_ARC of FIELD_OBJECT is
 begin
-	MAIN:process(V_ADR,H_ADR)
+    --! Ausgabe des Spielfeldes
+	AUSGABE:process(V_ADR,H_ADR)
 	variable H_ADR_SIG: integer:=to_integer(unsigned(H_ADR));
 	variable V_ADR_SIG: integer:=to_integer(unsigned(V_ADR));
 	begin
@@ -35,5 +51,5 @@ begin
 				draw<='0';
 			end if;
 		end if;
-	end process MAIN;
+	end process AUSGABE;
 end architecture FIELD_OBJECT_ARC; 

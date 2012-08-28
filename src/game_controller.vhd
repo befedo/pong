@@ -1,3 +1,10 @@
+-------------------------------------------------------
+--! @file game_controller.vhd
+--! @brief Diese Datei beinhaltet den Game Controller, seine Aufgabe bestreht darin das Spielfeld aufzubauen und die Eingaben des Spielers zu verarbeiten.
+--! @author Matthias Springsetin
+--! @date 27.08.12
+-------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
@@ -5,16 +12,25 @@ use ieee.numeric_std.all;
 
 entity GAME_CONTROLLER is
     port(
-        --! 
+        --! Takteingang
         CLK: in std_logic;
+        --! Eingang für eine Aufwärtsbewegung des ersten Spielers
         UP_PLAYER_1: in std_logic;
+        --! Eingang für eine Abwärtsbewegung des ersten Spielers
         DOWN_PLAYER_1: in std_logic;
+        --! Eingang für eine Aufwärtsbewegung des zweiten Spielers
         UP_PLAYER_2: in std_logic;
+        --! Eingang für eine Abwärtsbewegung des zweiten Spielers
         DOWN_PLAYER_2: in std_logic;
+        --! Setzt alle Positionen von Ball, Punkte-Stand und Paddles zurück
         RESET: in std_logic;
+        --! Gibt den aktuellen Farbwert für die Horizontale und Vertikale Adresse zurück
         DOUT: out std_logic_vector(2 downto 0);
+        --! Vertikale Adresse 
         V_ADR: in std_logic_vector(11 downto 0);
+        --! Horizontale Adresse
         H_ADR: in std_logic_vector(11 downto 0);
+        --! Takteingang für die Aktuallisierung des Farbausganges
         ADR_CLK: in std_logic
     );
 end entity GAME_CONTROLLER;
@@ -124,7 +140,7 @@ component SCORE_OBJECT is
     START_X: integer range 0 to 1599:=80;
     START_Y: integer range 0 to 1199:=20;
     BARE_WIDTH: natural:=15;
-    BARE_HEIGTH: natural:=60;
+    BARE_HEIGHT: natural:=60;
     DISTANCE: natural :=20
   );
   port(

@@ -1,10 +1,15 @@
+-------------------------------------------------------
+--! @file pong.vhd
+--! @brief Diese Datei beinhaltet die Hauptentity(Gegebenenfals noch eine Entity für die Pinzuweisung).
+--! @author Matthias Springsetin
+--! @author Marc Ludwig
+--! @date 27.08.12
+-------------------------------------------------------
+
+
 library ieee;
 use ieee.std_logic_1164.all;
 
--------------------------------------------------------
---! @file
---! @brief PONG Hauptentity 
--------------------------------------------------------
 entity PONG is
     port(
         --! Takteingang
