@@ -273,16 +273,48 @@ sind zudem sehr komplex und es wird auf die weiterführende Literatur verwiesen.
 \vspace{7.5mm}
 
 \texttt{Systempartitionierung des Datenpfads:\\Welche Komponenten sind zur Lösung von Teilaufgaben geeignet?}
+\index{Systempartitionierung}
 \newline
-Zu erwähnen ist, dass wir die generierten Bildpunkte in einem eigens für diesen Zweck konzipierten RAM untergebracht haben (\emph{vga\_ram.vhd})
-welcher hauptsächlich von zwei Elementen bearbeitet wird einem Game-Controller (\emph{game\_controller.vhd}) bzw. dem Video-Controller 
-(\emph{video\_controller.vhd}). Des weiteren entsteht noch eine mit dem quartus Mega-Wizzard erstellte Phasen-Regelschleife, um einen Pixeltackt
-nach gewählter Auflösung zu generieren.
-z.B. 	25,75MHz bei 640x480 Pixeln @ 60Hz
-		162,5MHz bei 1600x1200 Pixeln @ 60Hz.
+Der Datenpfad wird hauptsächlich von zwei Elementen bearbeitet einem Game-Controller (\emph{game\_controller.vhd}) und einem Video-Controller 
+(\emph{video\_controller.vhd}). Jede dieser Datenpfadkomponente instanziiert wiederum weitere Gebilde wie im folgenden Struktogramm ersichtlich ist.
+Des weiteren generiert eine mit dem Quartus Mega-Wizzard erstellte Phasen-Regelschleife, einen Pixeltackt
+nach gewählter Auflösung.
+z.B. 25,75MHz bei 640x480 Pixeln @ 60Hz oder 162,5MHz bei 1600x1200 Pixeln @ 60Hz.
 Es wurden jeweils VESA zertifizierte Auflösungen gewählt, da diese von den meisten (in der Regel allen) Monitoren unterstützt werden und eine
 Bildwiederholrate von 60Hz, da diese quasi Standard bei den von uns verwendeten TFT-Monitoren war.		
 \vspace{7.5mm}
+
+Somit läßt sich das von uns gewählte Klassendiagramm wie folgt darstellen:
+\begin{figure}[here]
+	\begin{center}
+		\includegraphics[width=0.65 \textwidth]{includes/PONG-Klassendiagramm.png}
+		\caption[Pong Entity]{Pong Entity}
+		\label{fig:Pong Entity}
+	\end{center}
+\end{figure}
+\vspace{7.5mm}
+
+\texttt{Analyse der Datenpfadkomponenten.}
+\index{Datenpfadkomponenten}
+\newline
+Eine genaue Analyse der Datenpfadkomponente ist über die mittels Doxygen erstellte Quelltextdokumentation gegeben.
+Hier können Blockdiagramme für alle Datenpfadkomponente mit Schnittstellensignalen sowie Steuersignale gefunden werden.
+\vspace{7.5mm}
+
+\texttt{Realisierung gewünschter Funktionen durch getaktete Automaten.}
+\index{getaktete Automaten}
+\newline
+Aufgrund der Entwicklung im Team und der daraus folgenden Arbeitsaufteilung, haben wir uns dazu entschieden einzeln bearbeitete Unterfunktionen
+(Datenpfad) durch vom Systemtakt getriebene Automaten zu beschreiben. Diese Realisierung ist somit, anders als in der Planung gedacht, nicht durch einen
+einzelnen Automaten gegeben. Was uns die Möglichkeit gab einzelne Teilmodule nicht nur Softwareseitig durch Testbenches und timing Simulationen, sondern 
+auch Hardwareseitig im Labor zu testen und auf gewünschte Funktion zu trimmen/korrigieren.
+\newline
+%TODO: Verweis auf Paddle
+Hierbei ergaben sich auch strukturelle Umkonfigurationen der geplanten Umsetzung, so dass wir ein eigens geschriebenes RAM-Modul in der späteren Realisierung
+nicht verwendeten. Hierzu zählen noch weiter Entitys, wie ein Frequenzteiler und Multiplexer.
+\vspace{7.5mm}
+
+\section{Hardwarekonfiguration}
 
 
 
