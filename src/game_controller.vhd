@@ -14,14 +14,14 @@ entity GAME_CONTROLLER is
     port(
         --! Takteingang
         CLK: in bit;
-        --! Eingang für eine Aufwärtsbewegung des ersten Spielers
-        UP_PLAYER_1: in bit;
-        --! Eingang für eine Abwärtsbewegung des ersten Spielers
-        DOWN_PLAYER_1: in bit;
-        --! Eingang für eine Aufwärtsbewegung des zweiten Spielers
-        UP_PLAYER_2: in bit;
-        --! Eingang für eine Abwärtsbewegung des zweiten Spielers
-        DOWN_PLAYER_2: in bit;
+        --! Eingang f�r das Paddle des 1. Spielers
+        STEP_PLAYER1: in bit;
+        --! Richtungsbit des Paddles
+		LNOTR_PLAYER1: in bit;
+        --! Eingang f�r das Paddle des 2. Spielers
+        STEP_PLAYER2: in bit;
+        --! Richtungsbit des Paddles
+		LNOTR_PLAYER2: in bit;        
         --! Setzt alle Positionen von Ball, Punkte-Stand und Paddles zurück
         RESET: in bit;
         --! Gibt den aktuellen Farbwert für die Horizontale und Vertikale Adresse zurück
@@ -85,7 +85,7 @@ component BALL_OBJECT
         BALL_Y_START_COUNT:natural :=200000;
         BALL_SPEED_UP:natural := 10000;
         BALL_SPEED_UP_Y:natural := 50000;
-        BALL_Y_START_COUNT_MAX:natural :=1000000;
+        BALL_Y_START_COUNT_MAX:natural :=100000;
         BALL_Y_START_COUNT_MIN:natural :=50000;
         BALL_MIN_COUNT: natural := 50000;
         BALL_DIMENSION:natural:=50
@@ -107,8 +107,10 @@ component BALL_OBJECT
         X_CURRENT:out integer range 0 to 1599;
         --! Aktuelle Y Position der Ball-Mitte
         Y_CURRENT:out integer range 0 to 1199;
-        PADDLE_UP: in bit;
-        PADDLE_DOWN: in bit
+        PADDLE_1_UP: in bit;
+        PADDLE_1_DOWN: in bit;
+        PADDLE_2_UP: in bit;
+        PADDLE_2_DOWN: in bit
     );
 end component BALL_OBJECT;
 
@@ -125,11 +127,9 @@ component PADDLE_OBJECT is
     );
     port(
         --! Takteingang
-        CLK: in bit;
-        --! Eingang für eine Aufwärtsbewegung
-        UP: in bit;
-        --! Eingang für eine Abwärtsbewegung
-        DOWN: in bit;
+        CLK: in bit;        
+        L_NOTR: in bit;
+        STEP: in bit;
         --! Setzt das Paddle mit einer '1' zurück zur Startposition
         RESET: in bit;
         --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
@@ -208,13 +208,13 @@ BALL_OBJECT_INST: BALL_OBJECT
     Y_CURRENT=>BALL_Y_CURRENT,PADDLE_1_UP=>PADDLE_1_UP,PADDLE_1_DOWN=>PADDLE_1_DOWN,PADDLE_2_UP=>PADDLE_2_UP,PADDLE_2_DOWN=>PADDLE_2_DOWN);
     
 PADDLE_OBJECT_INST_1: PADDLE_OBJECT 
-  port map(CLK=>CLK,UP=>UP_PLAYER_1,DOWN=>DOWN_PLAYER_1,RESET=>RESET_SIG,DRAW=>DRAW_PADDLE_1,V_ADR=>V_ADR,
+  port map(CLK=>CLK,L_NOTR=>LNOTR_PLAYER1, STEP=>STEP_PLAYER1,RESET=>RESET_SIG,DRAW=>DRAW_PADDLE_1,V_ADR=>V_ADR,
     H_ADR=>H_ADR,PADDLE_TOP=>PADDLE_TOP_PLAYER_1,PADDLE_BOTTOM=>PADDLE_BOTTOM_PLAYER_1,UP_SIG=>PADDLE_1_UP_STD,
     DOWN_SIG=>PADDLE_1_DOWN_STD);
     
 PADDLE_OBJECT_INST_2: PADDLE_OBJECT 
   generic map(PADDLE_POS_X=>1500)
-  port map(CLK=>CLK,UP=>UP_PLAYER_2,DOWN=>DOWN_PLAYER_2,RESET=>RESET_SIG,DRAW=>DRAW_PADDLE_2,V_ADR=>V_ADR,
+  port map(CLK=>CLK,L_NOTR=>LNOTR_PLAYER2,STEP=>STEP_PLAYER2,RESET=>RESET_SIG,DRAW=>DRAW_PADDLE_2,V_ADR=>V_ADR,
     H_ADR=>H_ADR,PADDLE_TOP=>PADDLE_TOP_PLAYER_2,PADDLE_BOTTOM=>PADDLE_BOTTOM_PLAYER_2,UP_SIG=>PADDLE_2_UP_STD,
     DOWN_SIG=>PADDLE_2_DOWN_STD);
         
@@ -304,7 +304,7 @@ GAME_AUTOMATE:process(ZUSTAND,BALL_X_CURRENT)
     end case;
   end process GAME_AUTOMATE;
   
-  
+   
 PADDLE_1_UP<=to_bit(PADDLE_1_UP_STD);
 PADDLE_1_DOWN<=to_bit(PADDLE_1_DOWN_STD);
 PADDLE_2_UP<=to_bit(PADDLE_2_UP_STD);

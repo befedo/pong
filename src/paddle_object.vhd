@@ -30,11 +30,9 @@ entity PADDLE_OBJECT is
     );
     port(
         --! Takteingang
-        CLK: in bit;
-        --! Eingang für eine Aufwärtsbewegung
-        UP: in bit;
-        --! Eingang für eine Abwärtsbewegung
-        DOWN: in bit;
+        CLK: in bit;        
+        L_NOTR: in bit;
+        STEP: in bit;
         --! Setzt das Paddle mit einer '1' zurück zur Startposition
         RESET: in bit;
         --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
@@ -57,45 +55,18 @@ architecture PADDLE_OBJECT_ARC of PADDLE_OBJECT is
 signal PADDLE_TOP_SIG: integer range 0 to 1199;
 signal PADDLE_TOP_SIG_LAST: integer range 0 to 1199;
 signal COUNT: natural;
-signal LOW_CLK: std_logic;
-
---PLEASE REMOVE ME
-component FREQUENZTEILER is
-    generic(	--! Parameter, durch welchen geteilt wird
-        		CLKVALUE : positive := 100000
-    );
-	port(		--! Takteingang
-				CLK,
-				--! Reset Leitung 
-				RESET    :   in bit;
-				--! Taktausgang
-				CLKOUT        :   out std_logic
-	);
-end component FREQUENZTEILER;
-
-
-for all: FREQUENZTEILER use entity work.FREQUENZTEILER(VERHALTEN);
-
---PLEASE REMOVE ME NOT
 
 begin
---PLEASE REMOVE ME
 
-F_INST: FREQUENZTEILER
-	port map(CLK=>CLK,RESET=>RESET, CLKOUT=>LOW_CLK);
-
---PLEASE REMOVE ME NOT
-
-
-PLAYER_PADDLE:process(CLK,RESET)
+PLAYER_PADDLE:process(STEP,RESET)
   begin           
   if(RESET='1') then
     PADDLE_TOP_SIG<=PADDLE_TOP_START;
-  elsif (LOW_CLK'event and LOW_CLK='1') then
-    if(UP='1' and PADDLE_TOP_SIG>PADDLE_TOP_LIMIT) then
-      PADDLE_TOP_SIG<=PADDLE_TOP_SIG-1;
-    elsif(DOWN='1' and PADDLE_TOP_SIG+PADDLE_HEIGTH<PADDLE_BOTTOM_LIMIT) then
-      PADDLE_TOP_SIG<=PADDLE_TOP_SIG+1;
+  elsif (STEP'EVENT and STEP='1') then
+    if(L_NOTR='1' and PADDLE_TOP_SIG>PADDLE_TOP_LIMIT) then
+      PADDLE_TOP_SIG<=PADDLE_TOP_SIG-PADDLE_STEP_WIDTH;
+    elsif(L_NOTR='0' and PADDLE_TOP_SIG+PADDLE_HEIGTH<PADDLE_BOTTOM_LIMIT) then
+      PADDLE_TOP_SIG<=PADDLE_TOP_SIG+PADDLE_STEP_WIDTH;
     end if;
   end if;
   end process PLAYER_PADDLE;

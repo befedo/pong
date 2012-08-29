@@ -48,14 +48,14 @@ component GAME_CONTROLLER
 	port(
         --! Takteingang
         CLK: in bit;
-        --! Eingang für eine Aufwärtsbewegung des ersten Spielers
-        UP_PLAYER_1: in bit;
-        --! Eingang für eine Abwärtsbewegung des ersten Spielers
-        DOWN_PLAYER_1: in bit;
-        --! Eingang für eine Aufwärtsbewegung des zweiten Spielers
-        UP_PLAYER_2: in bit;
-        --! Eingang für eine Abwärtsbewegung des zweiten Spielers
-        DOWN_PLAYER_2: in bit;
+        --! Eingang f�r das Paddle des 1. Spielers
+        STEP_PLAYER1: in bit;
+        --! Richtungsbit des Paddles
+		LNOTR_PLAYER1: in bit;
+        --! Eingang f�r das Paddle des 2. Spielers
+        STEP_PLAYER2: in bit;
+        --! Richtungsbit des Paddles
+		LNOTR_PLAYER2: in bit;
         --! Setzt alle Positionen von Ball, Punkte-Stand und Paddles zurück
         RESET: in bit;
         --! Gibt den aktuellen Farbwert für die Horizontale und Vertikale Adresse zurück
@@ -96,8 +96,23 @@ component VIDEO_CONTROLLER is
     );
 end component VIDEO_CONTROLLER;
 
+component PADDLE is
+	port(	--!	Takteingang
+			CLK_50Mhz,
+			--! Resetleitung
+			RESET			:	in	bit;
+			--!	Eingangsvektor
+			DIN				:	in	bit_vector(1 downto 0);
+			--! Richtungsvorgabe
+			LEFTNOTRIGHT,
+			--! Generierter Schritttakt
+			STEP			:	out	std_logic
+	);
+end component PADDLE;
+
 for all: VIDEO_CONTROLLER use entity work.VIDEO_CONTROLLER(VIDEO_CONTROLLER_ARC);
 for all: GAME_CONTROLLER use entity work.GAME_CONTROLLER(GAME_CONTROLLER_ARC);
+for all: PADDLE use entity work.PADDLE(VERHALTEN);
 
 signal V_ADR: bit_vector(11 downto 0);
 signal H_ADR: bit_vector(11 downto 0);
@@ -105,10 +120,14 @@ signal V_ADR_STD: std_logic_vector(11 downto 0);
 signal H_ADR_STD: std_logic_vector(11 downto 0);
 signal PIXEL_CLK: bit;
 signal PIXEL_CLK_STD: std_logic;
-signal L_NOTR_PLAYER_1:  bit;
-signal STEP_PLAYER_1:  bit;
-signal L_NOTR_PLAYER_2:  bit;
-signal STEP_PLAYER_2:  bit;
+signal L_NOTR_PLAYER_1:  std_logic;
+signal STEP_PLAYER_1:  std_logic;
+signal L_NOTR_PLAYER_2:  std_logic;
+signal STEP_PLAYER_2:  std_logic;
+signal L_NOTR_PLAYER_1_BIT:  bit;
+signal STEP_PLAYER_1_BIT:  bit;
+signal L_NOTR_PLAYER_2_BIT:  bit;
+signal STEP_PLAYER_2_BIT:  bit;
 signal DATA:bit_vector(2 downto 0);
 
 begin
@@ -117,14 +136,19 @@ VIDEO_CONTROLLER_INST : VIDEO_CONTROLLER
   port map(CLK=>CLK,H_SYNC=>H_SYNC,V_SYNC=>V_SYNC,RED=>RED,GREEN=>GREEN,BLUE=>BLUE,VGA_CLOCK=>VGA_CLOCK,
            VGA_BLANK=>VGA_BLANK,VGA_SYNC=>VGA_SYNC,H_ADR=>H_ADR_STD,V_ADR=>V_ADR_STD,DIN=>DATA,ADR_CLK=>PIXEL_CLK_STD );
 GAME_CONTROLLER_INST : GAME_CONTROLLER       
-  port map(CLK=>CLK, UP_PLAYER_1=>L_NOTR_PLAYER_1,DOWN_PLAYER_1=>STEP_PLAYER_1,UP_PLAYER_2=>L_NOTR_PLAYER_2,
-           DOWN_PLAYER_2=>STEP_PLAYER_2,RESET=>RESET,DOUT=>DATA,V_ADR=>V_ADR,H_ADR=>H_ADR,ADR_CLK=>PIXEL_CLK);
+  port map(CLK=>CLK,STEP_PLAYER1 => STEP_PLAYER_1_BIT, LNOTR_PLAYER1 => L_NOTR_PLAYER_1_BIT, STEP_PLAYER2 => STEP_PLAYER_2_BIT,LNOTR_PLAYER2 => L_NOTR_PLAYER_2_BIT, RESET=>RESET,DOUT=>DATA,V_ADR=>V_ADR,H_ADR=>H_ADR,ADR_CLK=>PIXEL_CLK);
+           
+PADDLE_INT1: PADDLE
+  port map(CLK_50Mhz => CLK, RESET => RESET, DIN => PADDLE_PLAYER1, LEFTNOTRIGHT => L_NOTR_PLAYER_1, STEP => STEP_PLAYER_1);
+  
+PADDLE_INT2: PADDLE
+  port map(CLK_50Mhz => CLK, RESET => RESET, DIN => PADDLE_PLAYER2, LEFTNOTRIGHT => L_NOTR_PLAYER_2, STEP => STEP_PLAYER_2);  
 
-L_NOTR_PLAYER_1<=PADDLE_PLAYER1(0);
-L_NOTR_PLAYER_2<=PADDLE_PLAYER2(0);
-STEP_PLAYER_1<=PADDLE_PLAYER1(1);
-STEP_PLAYER_2<=PADDLE_PLAYER2(1);
 
+L_NOTR_PLAYER_1_BIT<=to_bit(L_NOTR_PLAYER_1);
+L_NOTR_PLAYER_2_BIT<=to_bit(L_NOTR_PLAYER_2);
+STEP_PLAYER_1_BIT<=to_bit(STEP_PLAYER_1);
+STEP_PLAYER_2_BIT<=to_bit(STEP_PLAYER_2);
 H_ADR<=to_bitvector(H_ADR_STD);
 V_ADR<=to_bitvector(V_ADR_STD);
 PIXEL_CLK<=to_bit(PIXEL_CLK_STD);

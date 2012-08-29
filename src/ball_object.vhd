@@ -118,29 +118,29 @@ MAIN:process(CLK,RESET,RESET_2)
         end if;
         --PADDLE BEWEGUNG(BALL RUNTER)
         if(PADDLE_1_UP='1' and OFFSET_Y=-1) then
-			COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
-			if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
-				OFFSET_Y<=-OFFSET_Y;
-			end if;
-		end if;
+            COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
+            if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
+                OFFSET_Y<=-OFFSET_Y;
+            end if;
+        end if;
         if(PADDLE_1_DOWN='1' and OFFSET_Y=-1) then
-			if(COUNTER_START_Y>BALL_Y_START_COUNT_MIN) then
-				COUNTER_START_Y<=COUNTER_START_Y-BALL_SPEED_UP_Y;
-			end if;
-		end if;
+            if(COUNTER_START_Y>BALL_Y_START_COUNT_MIN) then
+                COUNTER_START_Y<=COUNTER_START_Y-BALL_SPEED_UP_Y;
+            end if;
+        end if;
         --PADDLE BEWEGUNG(BALL HOCH)
         if(PADDLE_1_UP='1' and OFFSET_Y=1) then
-			if(COUNTER_START_Y>BALL_Y_START_COUNT_MIN) then
-				COUNTER_START_Y<=COUNTER_START_Y-BALL_SPEED_UP_Y;
-			end if;
-		end if;
+            if(COUNTER_START_Y>BALL_Y_START_COUNT_MIN) then
+                COUNTER_START_Y<=COUNTER_START_Y-BALL_SPEED_UP_Y;
+            end if;
+        end if;
         if(PADDLE_1_DOWN='1' and OFFSET_Y=1) then
-			COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
-			if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
-				OFFSET_Y<=-OFFSET_Y;
-			end if;
-		end if;
-		--
+            COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
+            if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
+                OFFSET_Y<=-OFFSET_Y;
+            end if;
+        end if;
+        --
       elsif(BALL_X>=BALL_RIGHT_LIMIT) then
         BALL_X<=BALL_X-1;
         OFFSET_X<=-OFFSET_X;
@@ -149,29 +149,29 @@ MAIN:process(CLK,RESET,RESET_2)
         end if;
         --PADDLE BEWEGUNG(BALL RUNTER)
         if(PADDLE_2_UP='1' and OFFSET_Y=-1) then
-			COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
-			if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
-				OFFSET_Y<=-OFFSET_Y;
-			end if;
-		end if;
+            COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
+            if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
+                OFFSET_Y<=-OFFSET_Y;
+            end if;
+        end if;
         if(PADDLE_2_DOWN='1' and OFFSET_Y=-1) then
-			if(COUNTER_START_Y>BALL_Y_START_COUNT_MIN) then
-				COUNTER_START_Y<=COUNTER_START_Y-BALL_SPEED_UP_Y;
-			end if;
-		end if;
+            if(COUNTER_START_Y>BALL_Y_START_COUNT_MIN) then
+                COUNTER_START_Y<=COUNTER_START_Y-BALL_SPEED_UP_Y;
+            end if;
+        end if;
         --PADDLE BEWEGUNG(BALL HOCH)
         if(PADDLE_2_UP='1' and OFFSET_Y=1) then
-			if(COUNTER_START_Y>BALL_Y_START_COUNT_MIN) then
-				COUNTER_START_Y<=COUNTER_START_Y-BALL_SPEED_UP_Y;
-			end if;
-		end if;
+            if(COUNTER_START_Y>BALL_Y_START_COUNT_MIN) then
+                COUNTER_START_Y<=COUNTER_START_Y-BALL_SPEED_UP_Y;
+            end if;
+        end if;
         if(PADDLE_2_DOWN='1' and OFFSET_Y=1) then
-			COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
-			if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
-				OFFSET_Y<=-OFFSET_Y;
-			end if;
-		end if;
-		--
+            COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
+            if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
+                OFFSET_Y<=-OFFSET_Y;
+            end if;
+        end if;
+        --
       else
         BALL_X<=BALL_X+OFFSET_X;
       end if;
