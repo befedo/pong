@@ -13,25 +13,25 @@ use ieee.numeric_std.all;
 entity GAME_CONTROLLER is
     port(
         --! Takteingang
-        CLK: in std_logic;
+        CLK: in bit;
         --! Eingang für eine Aufwärtsbewegung des ersten Spielers
-        UP_PLAYER_1: in std_logic;
+        UP_PLAYER_1: in bit;
         --! Eingang für eine Abwärtsbewegung des ersten Spielers
-        DOWN_PLAYER_1: in std_logic;
+        DOWN_PLAYER_1: in bit;
         --! Eingang für eine Aufwärtsbewegung des zweiten Spielers
-        UP_PLAYER_2: in std_logic;
+        UP_PLAYER_2: in bit;
         --! Eingang für eine Abwärtsbewegung des zweiten Spielers
-        DOWN_PLAYER_2: in std_logic;
+        DOWN_PLAYER_2: in bit;
         --! Setzt alle Positionen von Ball, Punkte-Stand und Paddles zurück
-        RESET: in std_logic;
+        RESET: in bit;
         --! Gibt den aktuellen Farbwert für die Horizontale und Vertikale Adresse zurück
-        DOUT: out std_logic_vector(2 downto 0);
+        DOUT: out bit_vector(2 downto 0);
         --! Vertikale Adresse 
-        V_ADR: in std_logic_vector(11 downto 0);
+        V_ADR: in bit_vector(11 downto 0);
         --! Horizontale Adresse
-        H_ADR: in std_logic_vector(11 downto 0);
+        H_ADR: in bit_vector(11 downto 0);
         --! Takteingang für die Aktuallisierung des Farbausganges
-        ADR_CLK: in std_logic
+        ADR_CLK: in bit
     );
 end entity GAME_CONTROLLER;
 
@@ -50,13 +50,21 @@ signal PADDLE_TOP_PLAYER_1:integer range 0 to 1199;
 signal PADDLE_BOTTOM_PLAYER_1:integer range 0 to 1199;
 signal PADDLE_TOP_PLAYER_2:integer range 0 to 1199;
 signal PADDLE_BOTTOM_PLAYER_2:integer range 0 to 1199;
-signal INCREASE_PLAYER_1:std_logic;
-signal INCREASE_PLAYER_2:std_logic;
+signal INCREASE_PLAYER_1:bit;
+signal INCREASE_PLAYER_2:bit;
 signal SCORE_PLAYER_1:integer range 0 to 5;
 signal SCORE_PLAYER_2:integer range 0 to 5;
-signal BALL_RESET_1: std_logic;
-signal BALL_RESET_2: std_logic;
-signal RESET_SIG: std_logic;
+signal BALL_RESET_1: bit;
+signal BALL_RESET_2: bit;
+signal RESET_SIG: bit;
+signal PADDLE_1_UP: bit;
+signal PADDLE_1_DOWN: bit;
+signal PADDLE_1_UP_STD: std_logic;
+signal PADDLE_1_DOWN_STD: std_logic;
+signal PADDLE_2_UP: bit;
+signal PADDLE_2_DOWN: bit;
+signal PADDLE_2_UP_STD: std_logic;
+signal PADDLE_2_DOWN_STD: std_logic;
 
 
 type ZUSTAENDE is(z0,z1,z2,z3);
@@ -73,20 +81,34 @@ component BALL_OBJECT
         BALL_Y_START:integer range 0 to 1199:=650;
         BALL_X_START_2: integer range 0 to 1599:=1490;
         BALL_Y_START_2:integer range 0 to 1199:=650;
-        BALL_X_START_COUNT: natural:=100000;
-        BALL_Y_START_COUNT:natural :=100000;
+        BALL_X_START_COUNT: natural:=200000;
+        BALL_Y_START_COUNT:natural :=200000;
+        BALL_SPEED_UP:natural := 10000;
+        BALL_SPEED_UP_Y:natural := 50000;
+        BALL_Y_START_COUNT_MAX:natural :=1000000;
+        BALL_Y_START_COUNT_MIN:natural :=50000;
+        BALL_MIN_COUNT: natural := 50000;
         BALL_DIMENSION:natural:=50
     );
     port(
-        --!
-        CLK: in std_logic;
-        RESET: in std_logic;
-        RESET_2: in std_logic;
+        --! Takteingang für die Bewegung des Balles
+        CLK: in bit;
+        --! Setzt den Ball auf die erste Start Position zurück 
+        RESET: in bit;
+        --! Setzt den Ball auf die zweite Start Position zurück 
+        RESET_2: in bit;
+        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
         DRAW: out std_logic;
-        V_ADR: in std_logic_vector(11 downto 0);
-        H_ADR: in std_logic_vector(11 downto 0);
+        --! Vertikale Adresse 
+        V_ADR: in bit_vector(11 downto 0);
+        --! Horizontale Adresse
+        H_ADR: in bit_vector(11 downto 0);
+        --! Aktuelle X Position der Ball-Mitte
         X_CURRENT:out integer range 0 to 1599;
-        Y_CURRENT:out integer range 0 to 1199
+        --! Aktuelle Y Position der Ball-Mitte
+        Y_CURRENT:out integer range 0 to 1199;
+        PADDLE_UP: in bit;
+        PADDLE_DOWN: in bit
     );
 end component BALL_OBJECT;
 
@@ -102,16 +124,27 @@ component PADDLE_OBJECT is
         PADDLE_STEP_WIDTH: integer range 1 to 200:=10 
     );
     port(
-        --!
-        CLK: in std_logic;
-        UP: in std_logic;
-        DOWN: in std_logic;
-        RESET: in std_logic;
+        --! Takteingang
+        CLK: in bit;
+        --! Eingang für eine Aufwärtsbewegung
+        UP: in bit;
+        --! Eingang für eine Abwärtsbewegung
+        DOWN: in bit;
+        --! Setzt das Paddle mit einer '1' zurück zur Startposition
+        RESET: in bit;
+        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
         DRAW: out std_logic;
-        V_ADR: in std_logic_vector(11 downto 0);
-        H_ADR: in std_logic_vector(11 downto 0);
+        --! Vertikale Adresse 
+        V_ADR: in bit_vector(11 downto 0);
+        --! Horizontale Adresse
+        H_ADR: in bit_vector(11 downto 0);
+        --! Aktuelle obere Position des Paddles
         PADDLE_TOP: out integer range 0 to 1199;
-        PADDLE_BOTTOM: out integer range 0 to 1199
+        --! Aktuelle untere Position des Paddles
+        PADDLE_BOTTOM: out integer range 0 to 1199;
+        
+        UP_SIG: out std_logic;
+        DOWN_SIG: out std_logic
     );
 end component PADDLE_OBJECT;
 
@@ -126,10 +159,12 @@ component FIELD_OBJECT is
         FIELD_WIDTH:natural:=3
     );
     port(
-        --!
+        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
         DRAW: out std_logic;
-        V_ADR: in std_logic_vector(11 downto 0);
-        H_ADR: in std_logic_vector(11 downto 0)
+        --! Vertikale Adresse 
+        V_ADR: in bit_vector(11 downto 0);
+        --! Horizontale Adresse
+        H_ADR: in bit_vector(11 downto 0)
     );
 end component FIELD_OBJECT;
 
@@ -144,13 +179,20 @@ component SCORE_OBJECT is
     DISTANCE: natural :=20
   );
   port(
-    CLK: in std_logic;
-    RESET: in std_logic;
-    INCREASE: in std_logic;
+    --! Takteingang
+    CLK: in bit;
+    --! Setzt den Punktestand zurück auf 0
+    RESET: in bit;
+    --! Erhöht mit den nächsten Takt den Punktestand
+    INCREASE: in bit;
+    --! Gibt den aktuellen Punktestand zurück
     CURRENT_SCORE: out integer range 0 to MAX_POINT;
+    --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
     DRAW: out std_logic;
-    V_ADR: in std_logic_vector(11 downto 0);
-    H_ADR: in std_logic_vector(11 downto 0)
+    --! Vertikale Adresse 
+    V_ADR: in bit_vector(11 downto 0);
+    --! Horizontale Adresse
+    H_ADR: in bit_vector(11 downto 0)
   );
 end component SCORE_OBJECT;
 
@@ -162,16 +204,19 @@ for all: SCORE_OBJECT use entity work.SCORE_OBJECT(SCORE_OBJECT_ARC);
 begin
 
 BALL_OBJECT_INST: BALL_OBJECT 
-  port map(CLK,RESET=>BALL_RESET_1,RESET_2=>BALL_RESET_2,DRAW=>DRAW_BALL,V_ADR=>V_ADR,H_ADR=>H_ADR,X_CURRENT=>BALL_X_CURRENT,Y_CURRENT=>BALL_Y_CURRENT);
+  port map(CLK,RESET=>BALL_RESET_1,RESET_2=>BALL_RESET_2,DRAW=>DRAW_BALL,V_ADR=>V_ADR,H_ADR=>H_ADR,X_CURRENT=>BALL_X_CURRENT,
+    Y_CURRENT=>BALL_Y_CURRENT,PADDLE_1_UP=>PADDLE_1_UP,PADDLE_1_DOWN=>PADDLE_1_DOWN,PADDLE_2_UP=>PADDLE_2_UP,PADDLE_2_DOWN=>PADDLE_2_DOWN);
     
 PADDLE_OBJECT_INST_1: PADDLE_OBJECT 
   port map(CLK=>CLK,UP=>UP_PLAYER_1,DOWN=>DOWN_PLAYER_1,RESET=>RESET_SIG,DRAW=>DRAW_PADDLE_1,V_ADR=>V_ADR,
-    H_ADR=>H_ADR,PADDLE_TOP=>PADDLE_TOP_PLAYER_1,PADDLE_BOTTOM=>PADDLE_BOTTOM_PLAYER_1);
+    H_ADR=>H_ADR,PADDLE_TOP=>PADDLE_TOP_PLAYER_1,PADDLE_BOTTOM=>PADDLE_BOTTOM_PLAYER_1,UP_SIG=>PADDLE_1_UP_STD,
+    DOWN_SIG=>PADDLE_1_DOWN_STD);
     
 PADDLE_OBJECT_INST_2: PADDLE_OBJECT 
   generic map(PADDLE_POS_X=>1500)
   port map(CLK=>CLK,UP=>UP_PLAYER_2,DOWN=>DOWN_PLAYER_2,RESET=>RESET_SIG,DRAW=>DRAW_PADDLE_2,V_ADR=>V_ADR,
-    H_ADR=>H_ADR,PADDLE_TOP=>PADDLE_TOP_PLAYER_2,PADDLE_BOTTOM=>PADDLE_BOTTOM_PLAYER_2);
+    H_ADR=>H_ADR,PADDLE_TOP=>PADDLE_TOP_PLAYER_2,PADDLE_BOTTOM=>PADDLE_BOTTOM_PLAYER_2,UP_SIG=>PADDLE_2_UP_STD,
+    DOWN_SIG=>PADDLE_2_DOWN_STD);
         
 FIELD_OBJECT_INST:FIELD_OBJECT
   port map(DRAW=>DRAW_FIELD,H_ADR=>H_ADR,V_ADR=>V_ADR);
@@ -258,5 +303,11 @@ GAME_AUTOMATE:process(ZUSTAND,BALL_X_CURRENT)
         end if;
     end case;
   end process GAME_AUTOMATE;
+  
+  
+PADDLE_1_UP<=to_bit(PADDLE_1_UP_STD);
+PADDLE_1_DOWN<=to_bit(PADDLE_1_DOWN_STD);
+PADDLE_2_UP<=to_bit(PADDLE_2_UP_STD);
+PADDLE_2_DOWN<=to_bit(PADDLE_2_DOWN_STD);
                 
 end architecture GAME_CONTROLLER_ARC; 

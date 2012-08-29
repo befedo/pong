@@ -10,7 +10,7 @@ use ieee.std_logic_1164.all;
 entity VIDEO_CONTROLLER is
     port(
         --! Takteingang
-        CLK: in std_logic;
+        CLK : in bit;
         --! H-sync Ausgang des VGA Anschlusses
         H_SYNC,
         --! V-sync Ausgang des VGA Anschlusses
@@ -29,7 +29,7 @@ entity VIDEO_CONTROLLER is
         VGA_SYNC: out std_logic;
         H_ADR: out std_logic_vector(11 downto 0);
         V_ADR: out std_logic_vector(11 downto 0);
-        DIN: in std_logic_vector(2 downto 0);
+        DIN: in bit_vector(2 downto 0);
         ADR_CLK: out std_logic
     );
 end entity VIDEO_CONTROLLER;
@@ -38,7 +38,7 @@ end entity VIDEO_CONTROLLER;
 architecture VIDEO_CONTROLLER_ARC of VIDEO_CONTROLLER is
 				
 component VGA is   
-          port( RED, GREEN, BLUE, CLOCK_50Mhz				: in std_logic;
+          port( RED, GREEN, BLUE, CLOCK_50Mhz				: in bit;
 				RED_OUT, GREEN_OUT, BLUE_OUT, H_SYNC_OUT, 
                 V_SYNC_OUT, VIDEO_ON, PIXEL_CLOCK			: out std_logic;
                 PIXEL_ROW, PIXEL_COLUMN						: out std_logic_vector(11 downto 0)

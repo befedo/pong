@@ -29,9 +29,9 @@ entity FIELD_OBJECT is
         --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
         DRAW: out std_logic;
         --! Vertikale Adresse 
-        V_ADR: in std_logic_vector(11 downto 0);
+        V_ADR: in bit_vector(11 downto 0);
         --! Horizontale Adresse
-        H_ADR: in std_logic_vector(11 downto 0);
+        H_ADR: in bit_vector(11 downto 0)
     );
 end entity FIELD_OBJECT;
 
@@ -39,9 +39,11 @@ architecture FIELD_OBJECT_ARC of FIELD_OBJECT is
 begin
     --! Ausgabe des Spielfeldes
 	AUSGABE:process(V_ADR,H_ADR)
-	variable H_ADR_SIG: integer:=to_integer(unsigned(H_ADR));
-	variable V_ADR_SIG: integer:=to_integer(unsigned(V_ADR));
+	variable H_ADR_SIG: integer;
+	variable V_ADR_SIG: integer;
 	begin
+	V_ADR_SIG:=to_integer(unsigned(to_stdlogicvector(V_ADR)));
+	H_ADR_SIG:=to_integer(unsigned(to_stdlogicvector(H_ADR)));
 		draw<='0';
 		if(V_ADR_SIG>FIELD_TOP and V_ADR_SIG<FIELD_BOTTOM and H_ADR_SIG>FIELD_LEFT and H_ADR_SIG<FIELD_RIGHT) then
 			draw<='1';

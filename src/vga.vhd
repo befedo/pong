@@ -2,6 +2,7 @@ library IEEE;
 use  IEEE.STD_LOGIC_1164.all;
 use  IEEE.STD_LOGIC_ARITH.all;
 use  IEEE.STD_LOGIC_UNSIGNED.all;
+use work.conv.all;
 
 ------------------------------------------------------------------------------------------------------
 --! @file	vga.vhd
@@ -18,7 +19,7 @@ entity VGA is
 			--! selektiert den grnen Ausgang
 			GREEN,
 			--! selektiert den blauen Ausgang
-			BLUE		: in	std_logic;
+			BLUE		: in	bit;
 			--! Ausgang Rot
 			RED_OUT,
 			--! Ausgang Grn
@@ -43,7 +44,7 @@ end VGA;
 architecture ARCH of VGA is
 	signal 	HORIZ_SYNC, VERT_SYNC, PIXEL_CLOCK_INT,
 			VIDEO_ON_INT, VIDEO_ON_V, VIDEO_ON_H 	: std_logic;
-	signal 	SIG_CLK, SIG_RED, SIG_GREEN, SIG_BLUE 	: std_logic;
+	signal 	SIG_CLK, SIG_RED, SIG_GREEN, SIG_BLUE 	: bit;
 	signal 	H_COUNT, V_COUNT 						: std_logic_vector(11 downto 0);
 
 
@@ -61,7 +62,7 @@ architecture ARCH of VGA is
 	constant 	V_END_COUNT			: Natural := 1250; --525;
 	component 	VGA_PLL
 		port(
-				INCLK0				: in STD_LOGIC  := '0';
+				INCLK0				: in bit  := '0';
 				C0					: out STD_LOGIC 
 			);
 	end component;
@@ -146,9 +147,9 @@ begin
 		V_SYNC_OUT <= VERT_SYNC;
 -- RGB Signale beim Rcklauf deaktivieren.
 		-- Konvertierung um Typ Missmatch zu vermeiden
-		RED_OUT <= RED and VIDEO_ON_INT;
-		GREEN_OUT <= GREEN and VIDEO_ON_INT;
-		BLUE_OUT <= BLUE and VIDEO_ON_INT;
+		RED_OUT <= to_stdlogic(RED) and VIDEO_ON_INT;
+		GREEN_OUT <= to_stdlogic(GREEN) and VIDEO_ON_INT;
+		BLUE_OUT <= to_stdlogic(BLUE) and VIDEO_ON_INT;
 
 end process;
 end ARCH;

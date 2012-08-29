@@ -28,19 +28,19 @@ entity SCORE_OBJECT is
   );
   port(
     --! Takteingang
-    CLK: in std_logic;
+    CLK: in bit;
     --! Setzt den Punktestand zurück auf 0
-    RESET: in std_logic;
+    RESET: in bit;
     --! Erhöht mit den nächsten Takt den Punktestand
-    INCREASE: in std_logic;
+    INCREASE: in bit;
     --! Gibt den aktuellen Punktestand zurück
     CURRENT_SCORE: out integer range 0 to MAX_POINT;
     --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
     DRAW: out std_logic;
     --! Vertikale Adresse 
-    V_ADR: in std_logic_vector(11 downto 0);
+    V_ADR: in bit_vector(11 downto 0);
     --! Horizontale Adresse
-    H_ADR: in std_logic_vector(11 downto 0);
+    H_ADR: in bit_vector(11 downto 0)
   );
 end entity SCORE_OBJECT;
 
@@ -67,11 +67,16 @@ begin
   
   --! Ausgabe des Punktestandes
   OUTPUT:process(V_ADR,H_ADR)
+  variable H_ADR_INT: integer;
+  variable V_ADR_INT: integer;
   begin
+  
+	H_ADR_INT:=to_integer(unsigned(to_stdlogicvector(H_ADR)));
+	V_ADR_INT:=to_integer(unsigned(to_stdlogicvector(V_ADR)));
     DRAW<='0';
     BARE:for I in 0 to MAX_POINT-1 loop
       if(I<CURRENT_SCORE_SIG) then
-        if(H_ADR>START_X+(DISTANCE+BARE_WIDTH)*I and H_ADR<START_X+BARE_WIDTH+(DISTANCE+BARE_WIDTH)*I and V_ADR>START_Y and V_ADR<START_Y+BARE_HEIGHT) then
+        if(H_ADR_INT>START_X+(DISTANCE+BARE_WIDTH)*I and H_ADR_INT<START_X+BARE_WIDTH+(DISTANCE+BARE_WIDTH)*I and V_ADR_INT>START_Y and V_ADR_INT<START_Y+BARE_HEIGHT) then
           DRAW<='1';
         end if;
       end if;
