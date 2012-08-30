@@ -114,20 +114,35 @@ for all: VIDEO_CONTROLLER use entity work.VIDEO_CONTROLLER(VIDEO_CONTROLLER_ARC)
 for all: GAME_CONTROLLER use entity work.GAME_CONTROLLER(GAME_CONTROLLER_ARC);
 for all: PADDLE use entity work.PADDLE(VERHALTEN);
 
+--! Aktuelle Vertikale Adresse(Umgewandelt)
 signal V_ADR: bit_vector(11 downto 0);
+--! Aktuelle Horizontale Adresse(Umgewandelt)
 signal H_ADR: bit_vector(11 downto 0);
+--! Aktuelle Vertikale Adresse
 signal V_ADR_STD: std_logic_vector(11 downto 0);
+--! Aktuelle Horizontale Adresse
 signal H_ADR_STD: std_logic_vector(11 downto 0);
+--! Taktfrequenz mit der sich H_ADR und V_ADR verändern(Umgewandelt)
 signal PIXEL_CLK: bit;
+--! Taktfrequenz mit der sich H_ADR und V_ADR verändern
 signal PIXEL_CLK_STD: std_logic;
+--! Signal für die Unterscheidung ob sich das Paddle, des 1 Spielers, nach oben oder nach unten bewegen soll
 signal L_NOTR_PLAYER_1:  std_logic;
+--! Mit jeder Flanke von Step wird eine Bewegung nach unten oder nach oben vollzogen(erster Spieler)
 signal STEP_PLAYER_1:  std_logic;
+--! Signal für die Unterscheidung ob sich das Paddle, des 2 Spielers, nach oben oder nach unten bewegen soll
 signal L_NOTR_PLAYER_2:  std_logic;
+--! Mit jeder Flanke von Step wird eine Bewegung nach unten oder nach oben vollzogen(zweiter Spieler)
 signal STEP_PLAYER_2:  std_logic;
+--! Signal für die Unterscheidung ob sich das Paddle, des 1 Spielers, nach oben oder nach unten bewegen soll(Umgewandelt)
 signal L_NOTR_PLAYER_1_BIT:  bit;
+--! Mit jeder Flanke von Step wird eine Bewegung nach unten oder nach oben vollzogen(erster Spieler)(Umgewandelt)
 signal STEP_PLAYER_1_BIT:  bit;
+--! Signal für die Unterscheidung ob sich das Paddle, des 2 Spielers, nach oben oder nach unten bewegen soll(Umgewandelt)
 signal L_NOTR_PLAYER_2_BIT:  bit;
+--! Mit jeder Flanke von Step wird eine Bewegung nach unten oder nach oben vollzogen(zweiter Spieler)(Umgewandelt)
 signal STEP_PLAYER_2_BIT:  bit;
+--! Farben Vektor
 signal DATA:bit_vector(2 downto 0);
 
 begin

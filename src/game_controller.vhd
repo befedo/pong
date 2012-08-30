@@ -36,39 +36,67 @@ entity GAME_CONTROLLER is
 end entity GAME_CONTROLLER;
 
 architecture GAME_CONTROLLER_ARC of GAME_CONTROLLER is
-signal PADDLE_1_STEP_IN: std_logic;
-signal PADDLE_2_STEP_IN: std_logic;
+--! Signal ob an der aktuellen Position sich der Ball befindet
 signal DRAW_BALL:std_logic;
+--! Signal ob an der aktuellen Position sich das erste Spieler Paddle befindet
 signal DRAW_PADDLE_1:std_logic;
+--! Signal ob an der aktuellen Position sich das erste Spieler Paddle befindet
 signal DRAW_PADDLE_2:std_logic;
+--! Signal ob an der aktuellen Position sich das Spielfeld befindet
 signal DRAW_FIELD:std_logic;
+--! Signal ob an der aktuellen Position sich die Punktzahlangabe des ersten Spielers befindet
 signal DRAW_SCORE_1:std_logic;
+--! Signal ob an der aktuellen Position sich die Punktzahlangabe des zweiten Spielers befindet
 signal DRAW_SCORE_2:std_logic;
+--! Signal für die aktuelle X Position des Balles
 signal BALL_X_CURRENT:integer range 0 to 1599;
+--! Signal für die aktuelle Y Position des Balles
 signal BALL_Y_CURRENT: integer range 0 to 1199;
+--! Obere Position des ersten Spieler Paddles
 signal PADDLE_TOP_PLAYER_1:integer range 0 to 1199;
+--! Untere Position des ersten Spieler Paddles
 signal PADDLE_BOTTOM_PLAYER_1:integer range 0 to 1199;
+--! Obere Position des zweiten Spieler Paddles
 signal PADDLE_TOP_PLAYER_2:integer range 0 to 1199;
+--! Untere Position des zweiten Spieler Paddles
 signal PADDLE_BOTTOM_PLAYER_2:integer range 0 to 1199;
+--! Signal für die Erhöhung des Punktestandes des ersten Spielers
 signal INCREASE_PLAYER_1:bit;
+--! Signal für die Erhöhung des Punktestandes des zweiten Spielers
 signal INCREASE_PLAYER_2:bit;
+--! Aktueller Punktestand des 1 Spielers
 signal SCORE_PLAYER_1:integer range 0 to 5;
+--! Aktueller Punktestand des 2 Spielers
 signal SCORE_PLAYER_2:integer range 0 to 5;
+--! Setzt den Ball auf die erste Position zurück
 signal BALL_RESET_1: bit;
+--! Setzt den Ball auf die zweite Position zurück
 signal BALL_RESET_2: bit;
+--! Setzt alle Objekt auf denn Ausgangzustand zurück
 signal RESET_SIG: bit;
+--! Umgewandeltes Paddle_1_Up_Std signal
 signal PADDLE_1_UP: bit;
+--! Umgewandeltes Paddle_1_Down_Std signal
 signal PADDLE_1_DOWN: bit;
+--! Ist '1' wenn die letzte Bewegung des Paddles nach oben ging(erster Spieler)
 signal PADDLE_1_UP_STD: std_logic;
+--! Ist '1' wenn die letzte Bewegung des Paddles nach unten ging(erster Spieler)
 signal PADDLE_1_DOWN_STD: std_logic;
+--! Umgewandeltes Paddle_2_Up_Std signal
 signal PADDLE_2_UP: bit;
+--! Umgewandeltes Paddle_2_Down_Std signal
 signal PADDLE_2_DOWN: bit;
+--! Ist '1' wenn die letzte Bewegung des Paddles nach oben ging(zweiter Spieler)
 signal PADDLE_2_UP_STD: std_logic;
+--! Ist '1' wenn die letzte Bewegung des Paddles nach unten ging(zweiter Spieler)
 signal PADDLE_2_DOWN_STD: std_logic;
 
-
+--! Zustände die der Gameautomat einnehmen kann
 type ZUSTAENDE is(z0,z1,z2,z3);
-signal ZUSTAND,FOLGE_Z:ZUSTAENDE;
+--! Aktueller Zustand des Spielautomat
+signal ZUSTAND:ZUSTAENDE;
+--! Nächster Zustand des Spielautomat
+signal FOLGE_Z:ZUSTAENDE;
 
 --BALL Komponente
 component BALL_OBJECT  
@@ -228,7 +256,7 @@ SCORE_OBJECT_INST_2: SCORE_OBJECT
   generic map(START_X=>800)
   port map(CLK=>CLK, RESET=>RESET_SIG,INCREASE=>INCREASE_PLAYER_2,CURRENT_SCORE=>SCORE_PLAYER_2,DRAW=>DRAW_SCORE_2,V_ADR=>V_ADR,H_ADR=>H_ADR);
 
-  
+--! Farbzuweisung der einzelnen Objekte
 AUSGABE:process(ADR_CLK)
   begin
   if(ADR_CLK'event and ADR_CLK='1') then
@@ -250,6 +278,7 @@ AUSGABE:process(ADR_CLK)
   end if;
   end process AUSGABE;
    
+--! Hauptprozess für den Automaten
 MAIN:process(CLK,RESET)
   begin
   if(RESET='1') then
@@ -258,7 +287,8 @@ MAIN:process(CLK,RESET)
     ZUSTAND<=FOLGE_Z;
   end if;
   end process MAIN;
-   
+
+--! Übergangsautomat von einen Spielzustand zum nächsten
 GAME_AUTOMATE:process(ZUSTAND,BALL_X_CURRENT)
   begin
     FOLGE_Z<=z0;
@@ -280,23 +310,23 @@ GAME_AUTOMATE:process(ZUSTAND,BALL_X_CURRENT)
         elsif(BALL_X_CURRENT=1500 and (BALL_Y_CURRENT<PADDLE_TOP_PLAYER_2 or BALL_Y_CURRENT>PADDLE_BOTTOM_PLAYER_2)) then
           FOLGE_Z<=z2;
         else
-	      FOLGE_Z<=z1;
-	    end if;
-		
+          FOLGE_Z<=z1;
+        end if;
+
       --Spieler 1 Punktet
       when z2=>
-		if(SCORE_PLAYER_1=5) then
-		  FOLGE_Z<=z0;
-		else
+        if(SCORE_PLAYER_1=5) then
+          FOLGE_Z<=z0;
+        else
           BALL_RESET_2<='1';
-		  INCREASE_PLAYER_1<='1';
-		  FOLGE_Z<=z1;
+          INCREASE_PLAYER_1<='1';
+          FOLGE_Z<=z1;
         end if;
       --Spieler 2 Punktet
       when z3=>
-		if(SCORE_PLAYER_2=5) then
-		  FOLGE_Z<=z0;
-		else
+        if(SCORE_PLAYER_2=5) then
+          FOLGE_Z<=z0;
+        else
           BALL_RESET_1<='1';
           INCREASE_PLAYER_2<='1';
           FOLGE_Z<=z1;

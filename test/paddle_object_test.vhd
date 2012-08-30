@@ -13,31 +13,52 @@ signal STEP:  bit;
 signal CLK:  bit;
 signal RESET:  bit;
 signal DRAW:  std_logic;
-signal V_ADR:  bit_vector(7 downto 0);
-signal H_ADR:  bit_vector(7 downto 0);
-signal PADDLE_TOP:  integer range 0 to 149;
-signal PADDLE_BOTTOM:  integer range 0 to 149;
+signal V_ADR:  bit_vector(11 downto 0);
+signal H_ADR:  bit_vector(11 downto 0);
+signal PADDLE_TOP:  integer range 0 to 1199;
+signal PADDLE_BOTTOM:  integer range 0 to 1199;
+signal UP_SIG: std_logic;
+signal DOWN_SIG: std_logic;
 
 component PADDLE_OBJECT is
     generic(
-        PADDLE_TOP_SIG_LIMIT: integer range 0 to 149:=30;
-        PADDLE_BOTTOM_SIG_LIMIT: integer range 0 to 149:=120;
-        PADDLE_TOP_SIG_START: integer range 0 to 149:=65;
-        PADDLE_BOTTOM_SIG_START:integer range 0 to 149:=85;
-        PADDLE_POS_X:integer range 0 to 199:=20;
-        PADDLE_WIDTH:integer range 0 to 199:=5
+        --! Oberes Limit des Spieler Paddles
+        PADDLE_TOP_LIMIT: integer range 0 to 1199:=199;
+        --! Untere Limit des Spieler Paddles
+        PADDLE_BOTTOM_LIMIT: integer range 0 to 1199:=1100;
+        --! Obere Position des Paddles bei einen Reset
+        PADDLE_TOP_START: integer range 0 to 1199:=500;
+        --! Vertikale Position des Paddles
+        PADDLE_POS_X:integer range 0 to 1599:=90;
+        --! Höhe des Paddles, in Pixel
+        PADDLE_HEIGTH: integer range 0 to 1199:=100;
+        --! Breite des Paddles, in Pixel
+        PADDLE_WIDTH:integer range 0 to 1599:=10;
+        --! Pixel Schrittweite bei einen Bewegung 
+        PADDLE_STEP_WIDTH: integer range 1 to 200:=10;
+        --! Verzögerung bei der erkennung der letzten Bewegungsrichtung
+        MOVE_REACTION: positive:=1000
     );
     port(
-        --!
+        --! Takteingang
+        CLK: in bit;        
         L_NOTR: in bit;
         STEP: in bit;
-        CLK: in bit;
+        --! Setzt das Paddle mit einer '1' zurück zur Startposition
         RESET: in bit;
+        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
         DRAW: out std_logic;
-        V_ADR: in bit_vector(7 downto 0);
-        H_ADR: in bit_vector(7 downto 0);
-        PADDLE_TOP: out integer range 0 to 149;
-        PADDLE_BOTTOM: out integer range 0 to 149
+        --! Vertikale Adresse 
+        V_ADR: in bit_vector(11 downto 0);
+        --! Horizontale Adresse
+        H_ADR: in bit_vector(11 downto 0);
+        --! Aktuelle obere Position des Paddles
+        PADDLE_TOP: out integer range 0 to 1199;
+        --! Aktuelle untere Position des Paddles
+        PADDLE_BOTTOM: out integer range 0 to 1199;
+        
+        UP_SIG: out std_logic;
+        DOWN_SIG: out std_logic
     );
 end component PADDLE_OBJECT;
 
@@ -46,7 +67,7 @@ for all: PADDLE_OBJECT use entity work.PADDLE_OBJECT(PADDLE_OBJECT_ARC);
 
 begin
 PADDLE_OBJECT_INST: PADDLE_OBJECT 
-    port map(L_NOTR,STEP,CLK,RESET,DRAW,V_ADR,H_ADR,PADDLE_TOP,PADDLE_BOTTOM);
+    port map(CLK,L_NOTR,STEP,RESET,DRAW,V_ADR,H_ADR,PADDLE_TOP,PADDLE_BOTTOM,UP_SIG,DOWN_SIG);
     
 CLKGENERATOR: process
 begin

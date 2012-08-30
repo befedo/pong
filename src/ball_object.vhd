@@ -34,8 +34,11 @@ entity BALL_OBJECT is
         BALL_Y_START_COUNT:natural :=5000;
         --! Wert um den der Startwert reduziert wird wenn es zu einer Richtungsumkehr kommt
         BALL_SPEED_UP:natural := 150;
+        --! Beschleunigung des Balles in Y Richtung 
         BALL_SPEED_UP_Y:natural := 150;
+        --! Maximaler Zählerstand bis die Bewegung umgekehrt wird
         BALL_Y_START_COUNT_MAX:natural :=40000;
+        --! Minimaler Zählerstand für die Maximal Geschwindigkeit in Y Richtung
         BALL_Y_START_COUNT_MIN:natural :=50000;
         --! Minimaler Start-Zählwert
         BALL_MIN_COUNT: natural := 50000;
@@ -59,9 +62,13 @@ entity BALL_OBJECT is
         X_CURRENT:out integer range 0 to 1599;
         --! Aktuelle Y Position der Ball-Mitte
         Y_CURRENT:out integer range 0 to 1199;
+        --! Eingang für die Bewegungsrichtung des linken Paddles(hoch)
         PADDLE_1_UP: in bit;
+        --! Eingang für die Bewegungsrichtung des linken Paddles(runter)
         PADDLE_1_DOWN: in bit;
+        --! Eingang für die Bewegungsrichtung des rechten Paddles(hoch)
         PADDLE_2_UP: in bit;
+        --! Eingang für die Bewegungsrichtung des linken Paddles(runter)
         PADDLE_2_DOWN: in bit
     );
 end entity BALL_OBJECT;

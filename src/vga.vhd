@@ -84,6 +84,7 @@ VIDEO_ON_INT <= VIDEO_ON_H and VIDEO_ON_V;
 PIXEL_CLOCK <= PIXEL_CLOCK_INT;
 VIDEO_ON <= VIDEO_ON_INT;
 
+--! Hauptprozess 
 process
 begin
 	wait until(PIXEL_CLOCK_INT'EVENT) and (PIXEL_CLOCK_INT='1');

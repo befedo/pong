@@ -27,9 +27,13 @@ entity VIDEO_CONTROLLER is
         VGA_BLANK,
         --! Sync Ausgang zum DAC
         VGA_SYNC: out std_logic;
+        --! Aktuelle Horizontale Position der Ausgabe
         H_ADR: out std_logic_vector(11 downto 0);
+        --! Aktuelle Vertikale Position der Ausgabe
         V_ADR: out std_logic_vector(11 downto 0);
+        --! Farbvektor der an der aktuelle Position ausgegeben werden soll
         DIN: in bit_vector(2 downto 0);
+        --! Taktfrequenz mit der sich H_ADR und V_ADR verändern
         ADR_CLK: out std_logic
     );
 end entity VIDEO_CONTROLLER;
@@ -61,9 +65,10 @@ begin
 -- Temporre Signale da Quartus konvertierungen in der Port Map nicht zu lt
 
 GEN_VGA : VGA		port map( CLOCK_50Mhz => CLK, RED => DIN(0), GREEN => DIN(1), BLUE => DIN(2),
-	RED_OUT => SIG_RED, GREEN_OUT => SIG_GREEN, BLUE_OUT => SIG_BLUE, H_SYNC_OUT => H_SYNC,
-	V_SYNC_OUT => V_SYNC, VIDEO_ON => SIG_VIDEO_ON, PIXEL_CLOCK => SIG_VGA_CLK, PIXEL_ROW=>PIXEL_ROW, PIXEL_COLUMN=>PIXEL_COLUMN);
+  RED_OUT => SIG_RED, GREEN_OUT => SIG_GREEN, BLUE_OUT => SIG_BLUE, H_SYNC_OUT => H_SYNC,
+  V_SYNC_OUT => V_SYNC, VIDEO_ON => SIG_VIDEO_ON, PIXEL_CLOCK => SIG_VGA_CLK, PIXEL_ROW=>PIXEL_ROW, PIXEL_COLUMN=>PIXEL_COLUMN);
 
+--! Umwandlung des 1 Bit Farbwertes zur Ausgabe an den Analog Device D/A Wandler
 process(SIG_VGA_CLK)
 begin
 	if(SIG_VGA_CLK'event and SIG_VGA_CLK='1') then

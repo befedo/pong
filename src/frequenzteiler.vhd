@@ -24,6 +24,7 @@ end FREQUENZTEILER;
 architecture VERHALTEN of FREQUENZTEILER is
 
 begin
+--! Zähler Prozess zum generiren 
 COUNT:process(CLK, RESET)
 variable VALUE    :   integer range 0 to CLKVALUE-1;
     begin
