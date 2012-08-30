@@ -35,7 +35,7 @@
 
 \section{Aufgabenstellung}
 \index{Aufgabenstellung}
-Ziel des Semesterprojektes ist es, auf dem Entwicklungsboard DE2-70 von Terasic 
+Ziel des Semesterprojektes ist es, auf dem Entwicklungsboard DE2 von Terasic 
 \footnote{http://www.altera.com/education/univ/materials/boards/de2-70/unv-de2-70-board.html}
 eine Umsetzung des 1972 ertsmals von Atari veröffentlichten Spiels Pong zu implementieren.
 
@@ -73,14 +73,13 @@ den Ball am Schläger vorbei, erhält der Gegner einen Punkt.
 Die Dokumentation des Semesterprojektes wird mit dem bereits erwähnten Textsatzsystem LaTeX
 durchgeführt und als generierte PDF Datei zur Verfügung gestellt. Eingebundene Abbildungen und 
 Diagramme sind ebenfalls im Dokumentationsverzeichnis enthalten.
-Die mittels Doxygen erstellte Quellcode Dokumentation liegt als HTML-Dokument 
-\footnote{\href{}{LINK ZUR DATEI EINFÜGEN}} vor.
+Die mittels Doxygen erstellte Quellcode Dokumentation liegt als HTML-Dokument vor.
 
 
 \section{Entwicklunghierarchie}
 \index{Entwicklunghierarchie}
 Als Entwicklungsansatz wurde zunächst das Top-Down Modell gewählt, unter dem Aspekt, mit einem
-spätere Bottom-Up Modell den gewählten Ansatz zu verifizieren. Als zu bevorzugendes Entwurfsmuster
+spätere Bottom-Up "`review"' den gewählten Ansatz zu verifizieren. Als zu bevorzugendes Entwurfsmuster
 für VHDL Designs ist das Register Transfer Level (im folgenden RTL) gewählt worden.
 
 Charakteristisch für eine RTL-Beschreibung ist die Trennung von Registern und kombinatorischen
@@ -308,15 +307,32 @@ Aufgrund der Entwicklung im Team und der daraus folgenden Arbeitsaufteilung, hab
 (Datenpfad) durch vom Systemtakt getriebene Automaten zu beschreiben. Diese Realisierung ist somit, anders als in der Planung gedacht, nicht durch einen
 einzelnen Automaten gegeben. Was uns die Möglichkeit gab einzelne Teilmodule nicht nur Softwareseitig durch Testbenches und timing Simulationen, sondern 
 auch Hardwareseitig im Labor zu testen und auf gewünschte Funktion zu trimmen/korrigieren.
-\newline
-%TODO: Verweis auf Paddle
+Die Umsetzung der Paddlebewegungen, wurde mittels Inkrementaler Istwertgeber realisiert. Näheres unter \ref{Hardwarekonfiguration}.
 Hierbei ergaben sich auch strukturelle Umkonfigurationen der geplanten Umsetzung, so dass wir ein eigens geschriebenes RAM-Modul in der späteren Realisierung
-nicht verwendeten. Hierzu zählen noch weiter Entitys, wie ein Frequenzteiler und Multiplexer.
+nicht verwendeten. Hierzu zählen noch weitere Entitys, wie ein Frequenzteiler und Multiplexer.
 \vspace{7.5mm}
 
 \section{Hardwarekonfiguration}
+\index{Hardwarekonfiguration}
+\label{Hardwarekonfiguration}
+Da eine Bedienung mittels Schiebeschalter, wie am Entwicklungsboard DE2 gegeben, recht nutzerunfreundlich ist und auch nicht dem Vorgaben des Originals entsprechen.
+Haben wir uns entschieden die Paddle Bewegungen mit einem Richtungscodierten Inkremental-Encoder zu steuern.
+\newline
+Dieser gibt auf zwei Ausgabespuren zwei Rechtecksignale aus, welche bei konstannter Rotationsbewegeung einen Tastgrad von 50/50 besitzen und eine Phasenlage von
+\(\pm\)90 Grad aufweisen, je nach Drehsinn. Mechanische Einzelheiten, sowie Ausgabesignalform und Pinbelegungen können dem Datenblatt unter 
+\footnote{http://www.bourns.com/data/global/pdfs/pec11.pdf} sowie als Dokument im Projektverzeichnis eingesehen werden.
 
-
+\subsection{Anschluss der Hardware}
+Die Anschlussbelegung entsprechend der Bezeichnungen des DE2 Boards sind in der Abbildung \ref{fig:Anschlussbelegung} zu sehen.
+\begin{figure}[here]
+	\begin{center}
+		\includegraphics[width=0.65 \textwidth]{includes/Anschlussbelegung.png}
+		\caption[Anschlussbelegung]{Anschlussbelegung}
+		\label{fig:Anschlussbelegung}
+	\end{center}
+\end{figure}
+\newline
+Der VGA-Monitor wird über den Anschluss J13 (VGA) mit dem Altera Entwicklungboard verbunden.
 
 \newpage
 \bibliography{library}
