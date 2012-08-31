@@ -125,9 +125,10 @@ MAIN:process(CLK,RESET,RESET_2)
         end if;
         --PADDLE BEWEGUNG(BALL RUNTER)
         if(PADDLE_1_UP='1' and OFFSET_Y=-1) then
-            COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
-            if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
+            if(COUNTER_START_Y+BALL_SPEED_UP_Y>BALL_Y_START_COUNT_MAX) then
                 OFFSET_Y<=-OFFSET_Y;
+            else
+				COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
             end if;
         end if;
         if(PADDLE_1_DOWN='1' and OFFSET_Y=-1) then
@@ -142,9 +143,10 @@ MAIN:process(CLK,RESET,RESET_2)
             end if;
         end if;
         if(PADDLE_1_DOWN='1' and OFFSET_Y=1) then
-            COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
-            if(COUNTER_START_Y>BALL_Y_START_COUNT_MAX) then
+            if(COUNTER_START_Y+BALL_SPEED_UP_Y>BALL_Y_START_COUNT_MAX) then
                 OFFSET_Y<=-OFFSET_Y;
+            else
+				COUNTER_START_Y<=COUNTER_START_Y+BALL_SPEED_UP_Y;
             end if;
         end if;
         --

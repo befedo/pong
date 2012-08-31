@@ -11,6 +11,7 @@ signal V_ADR: bit_vector(8 downto 0);
 signal DIN: bit_vector(2 downto 0);
 signal DOUT: std_logic_vector(2 downto 0);
 signal CLK,WE,EN: bit;
+signal FINISH: boolean;
 
 component VGA_RAM    
     generic(
@@ -42,6 +43,7 @@ end component VGA_RAM;
 for all: VGA_RAM use entity work.VGA_RAM(VGA_RAM_ARC);
 
 begin
+
 VGA_RAM_INST: VGA_RAM 
     generic map(H_WIDTH=>10,V_WIDTH=>9,WORD_WIDTH=>3)
     port map(H_ADR,V_ADR,DIN,CLK,WE,EN,DOUT);
@@ -52,11 +54,15 @@ begin
     wait for 0.1 ns;
     CLK<='0';
     wait for 0.1 ns;
+    if(FINISH) then
+      wait;
+    end if;
 end process CLKGENERATOR;
     
 -- Hier startet der Test
 TEST:process
 begin
+    FINISH<=false;
     EN<='1';
     assert false report "Test von VGA_RAM startet." severity note;
     --Schreiben Testen
@@ -194,6 +200,7 @@ begin
     assert DOUT="010" report "ENABLE Test fehlgeschlagen:4." severity error;
     WE<='0';
     wait for 10 ns;
+    FINISH<=true;
     
     
     wait;

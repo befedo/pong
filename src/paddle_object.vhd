@@ -74,9 +74,17 @@ PLAYER_PADDLE:process(STEP,RESET)
     PADDLE_TOP_SIG<=PADDLE_TOP_START;
   elsif (STEP'EVENT and STEP='1') then
     if(L_NOTR='1' and PADDLE_TOP_SIG>PADDLE_TOP_LIMIT) then
-      PADDLE_TOP_SIG<=PADDLE_TOP_SIG-PADDLE_STEP_WIDTH;
+      if(PADDLE_TOP_SIG-PADDLE_STEP_WIDTH>PADDLE_TOP_LIMIT) then
+		PADDLE_TOP_SIG<=PADDLE_TOP_SIG-PADDLE_STEP_WIDTH;
+      else
+		PADDLE_TOP_SIG<=PADDLE_TOP_LIMIT;
+	  end if;
     elsif(L_NOTR='0' and PADDLE_TOP_SIG+PADDLE_HEIGTH<PADDLE_BOTTOM_LIMIT) then
-      PADDLE_TOP_SIG<=PADDLE_TOP_SIG+PADDLE_STEP_WIDTH;
+      if(PADDLE_TOP_SIG+PADDLE_STEP_WIDTH+PADDLE_HEIGTH<PADDLE_BOTTOM_LIMIT) then
+		PADDLE_TOP_SIG<=PADDLE_TOP_SIG+PADDLE_STEP_WIDTH;
+      else
+		PADDLE_TOP_SIG<=PADDLE_BOTTOM_LIMIT-PADDLE_HEIGTH;
+	  end if;
     end if;
   end if;
   end process PLAYER_PADDLE;
@@ -96,7 +104,7 @@ PADDLE_TOP<=PADDLE_TOP_SIG;
 PADDLE_BOTTOM<=PADDLE_TOP_SIG+PADDLE_HEIGTH;
 
 --! Prozess zur Berechnung der letzten Bewegung
-MOVEMENT:process(CLK)
+MOVEMENT:process(CLK,RESET)
 	begin
 		if(CLK'event and CLK='1') then
 			if(PADDLE_TOP_SIG=PADDLE_TOP_SIG_LAST) then
@@ -109,17 +117,20 @@ MOVEMENT:process(CLK)
 			else
 				COUNT<=0;
 				if(PADDLE_TOP_SIG<PADDLE_TOP_SIG_LAST) then
-					UP_SIG<='1';
-				else 
+					UP_SIG<='0';
 					DOWN_SIG<='1';
+				else 
+					UP_SIG<='1';
+					DOWN_SIG<='0';
 				end if;
 			end if;
 		end if;
 	end process;
 
 --! Prozess zum Speichern der letzten Bewegung
-MOVEMENT_2:process(CLK)
+MOVEMENT_2:process(CLK,RESET)
   begin
+		
         if(CLK'event and CLK='1') then
           if(COUNT_2>2) then
             PADDLE_TOP_SIG_LAST<=PADDLE_TOP_SIG;

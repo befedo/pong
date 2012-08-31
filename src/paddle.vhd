@@ -41,7 +41,7 @@ begin
 			ZUSTAND <= Z00; 	
 			COUNTER <= 0;
 	elsif	CLK_50Mhz = '1'	and CLK_50Mhz'event	then
-		if(COUNTER=4000) then
+		if(COUNTER=12000) then
 			ZUSTAND <= FOLGEZUSTAND;
 			COUNTER <= 0;
 		else

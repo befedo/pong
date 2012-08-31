@@ -37,7 +37,7 @@ component PADDLE_OBJECT is
         --! Pixel Schrittweite bei einen Bewegung 
         PADDLE_STEP_WIDTH: integer range 1 to 200:=10;
         --! Verzögerung bei der erkennung der letzten Bewegungsrichtung
-        MOVE_REACTION: positive:=1000
+        MOVE_REACTION: positive:=100
     );
     port(
         --! Takteingang

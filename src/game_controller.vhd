@@ -113,9 +113,9 @@ component BALL_OBJECT
         BALL_Y_START_COUNT:natural :=200000;
         BALL_SPEED_UP:natural := 10000;
         BALL_SPEED_UP_Y:natural := 50000;
-        BALL_Y_START_COUNT_MAX:natural :=100000;
+        BALL_Y_START_COUNT_MAX:natural :=400000;
         BALL_Y_START_COUNT_MIN:natural :=50000;
-        BALL_MIN_COUNT: natural := 50000;
+        BALL_MIN_COUNT: natural := 40000;
         BALL_DIMENSION:natural:=50
     );
     port(
@@ -145,18 +145,29 @@ end component BALL_OBJECT;
 --PADDLE Komponente
 component PADDLE_OBJECT is
     generic(
+        --! Oberes Limit des Spieler Paddles
         PADDLE_TOP_LIMIT: integer range 0 to 1199:=199;
+        --! Untere Limit des Spieler Paddles
         PADDLE_BOTTOM_LIMIT: integer range 0 to 1199:=1100;
-        PADDLE_TOP_START: integer range 0 to 1199:=600;
+        --! Obere Position des Paddles bei einen Reset
+        PADDLE_TOP_START: integer range 0 to 1199:=500;
+        --! Vertikale Position des Paddles
         PADDLE_POS_X:integer range 0 to 1599:=90;
+        --! Höhe des Paddles, in Pixel
         PADDLE_HEIGTH: integer range 0 to 1199:=100;
+        --! Breite des Paddles, in Pixel
         PADDLE_WIDTH:integer range 0 to 1599:=10;
-        PADDLE_STEP_WIDTH: integer range 1 to 200:=10 
+        --! Pixel Schrittweite bei einen Bewegung 
+        PADDLE_STEP_WIDTH: integer range 1 to 200:=10;
+        --! Verzögerung bei der erkennung der letzten Bewegungsrichtung
+        MOVE_REACTION: positive:=1000000
     );
     port(
         --! Takteingang
-        CLK: in bit;        
+        CLK: in bit;    
+        --! L_NOTR gibt die Drehrichtung des Drehgebers an.
         L_NOTR: in bit;
+        --! Mit jeder Flanke von Step wird eine Bewegung nach unten oder nach oben vollzogen
         STEP: in bit;
         --! Setzt das Paddle mit einer '1' zurück zur Startposition
         RESET: in bit;
@@ -170,8 +181,9 @@ component PADDLE_OBJECT is
         PADDLE_TOP: out integer range 0 to 1199;
         --! Aktuelle untere Position des Paddles
         PADDLE_BOTTOM: out integer range 0 to 1199;
-        
+        --! Die Letzte Bewegung des Paddles ging nach oben
         UP_SIG: out std_logic;
+        --! Die Letzte Bewegung des Paddles ging nach unten
         DOWN_SIG: out std_logic
     );
 end component PADDLE_OBJECT;
@@ -305,9 +317,9 @@ GAME_AUTOMATE:process(ZUSTAND,BALL_X_CURRENT)
         BALL_RESET_1<='1';
       --Spiel läuft
       when z1=>
-        if(BALL_X_CURRENT=100 and (BALL_Y_CURRENT<PADDLE_TOP_PLAYER_1 or BALL_Y_CURRENT>PADDLE_BOTTOM_PLAYER_1)) then 
+        if(BALL_X_CURRENT=100 and (BALL_Y_CURRENT<PADDLE_TOP_PLAYER_1-15 or BALL_Y_CURRENT>PADDLE_BOTTOM_PLAYER_1+15)) then 
           FOLGE_Z<=z3;
-        elsif(BALL_X_CURRENT=1500 and (BALL_Y_CURRENT<PADDLE_TOP_PLAYER_2 or BALL_Y_CURRENT>PADDLE_BOTTOM_PLAYER_2)) then
+        elsif(BALL_X_CURRENT=1500 and (BALL_Y_CURRENT<PADDLE_TOP_PLAYER_2-15 or BALL_Y_CURRENT>PADDLE_BOTTOM_PLAYER_2+15)) then
           FOLGE_Z<=z2;
         else
           FOLGE_Z<=z1;

@@ -58,7 +58,7 @@ applicable agreement for further details.
 	(input)
 	(rect 56 224 224 240)
 	(text "INPUT" (rect 133 0 161 10)(font "Arial" (font_size 6)))
-	(text "SW[17..16]" (rect 5 0 60 12)(font "Arial" ))
+	(text "GPIO_0[0..1]" (rect 5 0 69 12)(font "Arial" ))
 	(pt 168 8)
 	(drawing
 		(line (pt 92 12)(pt 117 12)(line_width 1))
@@ -75,7 +75,7 @@ applicable agreement for further details.
 	(input)
 	(rect 56 192 224 208)
 	(text "INPUT" (rect 133 0 161 10)(font "Arial" (font_size 6)))
-	(text "GPIO_1[2]" (rect 5 0 56 12)(font "Arial" ))
+	(text "SW[0]" (rect 5 0 35 12)(font "Arial" ))
 	(pt 168 8)
 	(drawing
 		(line (pt 92 12)(pt 117 12)(line_width 1))
