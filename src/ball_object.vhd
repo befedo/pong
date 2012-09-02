@@ -11,66 +11,66 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
 entity BALL_OBJECT is
-    generic(
-        --! Obere Begrenzung des Balles
-        BALL_TOP_LIMIT: integer range 0 to 1199:=10;
-        --! Untere Begrenzung des Balles
-        BALL_BOTTOM_LIMIT: integer range 0 to 1199:=20;
-        --! Linke Begrenzung des Balles
-        BALL_LEFT_LIMIT: integer range 0 to 1599:=10;
-        --! Rechte Begrenzung des Balles
-        BALL_RIGHT_LIMIT:integer range 0 to 1599:=20;
-        --! X Koordinate des Balles bei RESET
-        BALL_X_START: integer range 0 to 1599:=11;
-        --! Y Koordinate des Balles bei RESET
-        BALL_Y_START:integer range 0 to 1199:=11;
-        --! X Koordinate des Balles bei RESET_2
-        BALL_X_START_2: integer range 0 to 1599:=11;
-        --! Y Koordinate des Balles bei RESET_2
-        BALL_Y_START_2:integer range 0 to 1199:=11;
-        --! Takteiler für eine Bewegung in X Richtung
-        BALL_X_START_COUNT: natural:=1000;
-        --! Takteiler für eine Bewegung in Y Richtung
-        BALL_Y_START_COUNT:natural :=5000;
-        --! Wert um den der Startwert reduziert wird wenn es zu einer Richtungsumkehr kommt
-        BALL_SPEED_UP:natural := 150;
-        --! Beschleunigung des Balles in Y Richtung 
-        BALL_SPEED_UP_Y:natural := 150;
-        --! Maximaler Zählerstand bis die Bewegung umgekehrt wird
-        BALL_Y_START_COUNT_MAX:natural :=40000;
-        --! Minimaler Zählerstand für die Maximal Geschwindigkeit in Y Richtung
-        BALL_Y_START_COUNT_MIN:natural :=50000;
-        --! Minimaler Start-Zählwert
-        BALL_MIN_COUNT: natural := 50000;
-        --! Ausdehnung des Balles
-        BALL_DIMENSION:natural:=6
-    );
-    port(
-        --! Takteingang für die Bewegung des Balles
-        CLK: in bit;
-        --! Setzt den Ball auf die erste Start Position zurück 
-        RESET: in bit;
-        --! Setzt den Ball auf die zweite Start Position zurück 
-        RESET_2: in bit;
-        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
-        DRAW: out std_logic;
-        --! Vertikale Adresse 
-        V_ADR: in bit_vector(11 downto 0);
-        --! Horizontale Adresse
-        H_ADR: in bit_vector(11 downto 0);
-        --! Aktuelle X Position der Ball-Mitte
-        X_CURRENT:out integer range 0 to 1599;
-        --! Aktuelle Y Position der Ball-Mitte
-        Y_CURRENT:out integer range 0 to 1199;
-        --! Eingang für die Bewegungsrichtung des linken Paddles(hoch)
-        PADDLE_1_UP: in bit;
-        --! Eingang für die Bewegungsrichtung des linken Paddles(runter)
-        PADDLE_1_DOWN: in bit;
-        --! Eingang für die Bewegungsrichtung des rechten Paddles(hoch)
-        PADDLE_2_UP: in bit;
-        --! Eingang für die Bewegungsrichtung des linken Paddles(runter)
-        PADDLE_2_DOWN: in bit
-    );
+  generic(
+    --! Obere Begrenzung des Balles
+    BALL_TOP_LIMIT: integer range 0 to 1199:=10;
+    --! Untere Begrenzung des Balles
+    BALL_BOTTOM_LIMIT: integer range 0 to 1199:=20;
+    --! Linke Begrenzung des Balles
+    BALL_LEFT_LIMIT: integer range 0 to 1599:=10;
+    --! Rechte Begrenzung des Balles
+    BALL_RIGHT_LIMIT:integer range 0 to 1599:=20;
+    --! X Koordinate des Balles bei RESET
+    BALL_X_START: integer range 0 to 1599:=11;
+    --! Y Koordinate des Balles bei RESET
+    BALL_Y_START:integer range 0 to 1199:=11;
+    --! X Koordinate des Balles bei RESET_2
+    BALL_X_START_2: integer range 0 to 1599:=11;
+    --! Y Koordinate des Balles bei RESET_2
+    BALL_Y_START_2:integer range 0 to 1199:=11;
+    --! Takteiler für eine Bewegung in X Richtung
+    BALL_X_START_COUNT: natural:=1000;
+    --! Takteiler für eine Bewegung in Y Richtung
+    BALL_Y_START_COUNT:natural :=5000;
+    --! Wert um den der Startwert reduziert wird wenn es zu einer Richtungsumkehr kommt
+    BALL_SPEED_UP:natural := 150;
+    --! Beschleunigung des Balles in Y Richtung 
+    BALL_SPEED_UP_Y:natural := 150;
+    --! Maximaler Zählerstand bis die Bewegung umgekehrt wird
+    BALL_Y_START_COUNT_MAX:natural :=40000;
+    --! Minimaler Zählerstand für die Maximal Geschwindigkeit in Y Richtung
+    BALL_Y_START_COUNT_MIN:natural :=50000;
+    --! Minimaler Start-Zählwert
+    BALL_MIN_COUNT: natural := 50000;
+    --! Ausdehnung des Balles
+    BALL_DIMENSION:natural:=6
+  );
+  port(
+    --! Takteingang für die Bewegung des Balles
+    CLK: in bit;
+    --! Setzt den Ball auf die erste Start Position zurück 
+    RESET: in bit;
+    --! Setzt den Ball auf die zweite Start Position zurück 
+    RESET_2: in bit;
+    --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
+    DRAW: out std_logic;
+    --! Vertikale Adresse 
+    V_ADR: in bit_vector(11 downto 0);
+    --! Horizontale Adresse
+    H_ADR: in bit_vector(11 downto 0);
+    --! Aktuelle X Position der Ball-Mitte
+    X_CURRENT:out integer range 0 to 1599;
+    --! Aktuelle Y Position der Ball-Mitte
+    Y_CURRENT:out integer range 0 to 1199;
+    --! Eingang für die Bewegungsrichtung des linken Paddles(hoch)
+    PADDLE_1_UP: in bit;
+    --! Eingang für die Bewegungsrichtung des linken Paddles(runter)
+    PADDLE_1_DOWN: in bit;
+    --! Eingang für die Bewegungsrichtung des rechten Paddles(hoch)
+    PADDLE_2_UP: in bit;
+    --! Eingang für die Bewegungsrichtung des linken Paddles(runter)
+    PADDLE_2_DOWN: in bit
+  );
 end entity BALL_OBJECT;
 
 architecture BALL_OBJECT_ARC of BALL_OBJECT is

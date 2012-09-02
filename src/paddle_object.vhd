@@ -75,70 +75,68 @@ PLAYER_PADDLE:process(STEP,RESET)
   elsif (STEP'EVENT and STEP='1') then
     if(L_NOTR='1' and PADDLE_TOP_SIG>PADDLE_TOP_LIMIT) then
       if(PADDLE_TOP_SIG-PADDLE_STEP_WIDTH>PADDLE_TOP_LIMIT) then
-		PADDLE_TOP_SIG<=PADDLE_TOP_SIG-PADDLE_STEP_WIDTH;
+        PADDLE_TOP_SIG<=PADDLE_TOP_SIG-PADDLE_STEP_WIDTH;
       else
-		PADDLE_TOP_SIG<=PADDLE_TOP_LIMIT;
-	  end if;
+        PADDLE_TOP_SIG<=PADDLE_TOP_LIMIT;
+      end if;
     elsif(L_NOTR='0' and PADDLE_TOP_SIG+PADDLE_HEIGTH<PADDLE_BOTTOM_LIMIT) then
       if(PADDLE_TOP_SIG+PADDLE_STEP_WIDTH+PADDLE_HEIGTH<PADDLE_BOTTOM_LIMIT) then
-		PADDLE_TOP_SIG<=PADDLE_TOP_SIG+PADDLE_STEP_WIDTH;
+        PADDLE_TOP_SIG<=PADDLE_TOP_SIG+PADDLE_STEP_WIDTH;
       else
-		PADDLE_TOP_SIG<=PADDLE_BOTTOM_LIMIT-PADDLE_HEIGTH;
-	  end if;
+        PADDLE_TOP_SIG<=PADDLE_BOTTOM_LIMIT-PADDLE_HEIGTH;
+      end if;
     end if;
   end if;
   end process PLAYER_PADDLE;
   
 --! Prozess zumr Ausgabe des Paddles
 AUSGABE:process(H_ADR,V_ADR)
-     begin
-        DRAW<='0';
-        if(not(to_integer(unsigned(to_stdlogicvector(H_ADR)))<PADDLE_POS_X or to_integer(unsigned(to_stdlogicvector(H_ADR)))>(PADDLE_POS_X+PADDLE_WIDTH))) then
-            if(not(to_integer(unsigned(to_stdlogicvector(V_ADR)))<PADDLE_TOP_SIG or to_integer(unsigned(to_stdlogicvector(V_ADR)))>(PADDLE_TOP_SIG+PADDLE_HEIGTH))) then
-				DRAW<='1';
-			end if;
-		end if;
-     end process;
-               
+  begin
+  DRAW<='0';
+  if(not(to_integer(unsigned(to_stdlogicvector(H_ADR)))<PADDLE_POS_X or to_integer(unsigned(to_stdlogicvector(H_ADR)))>(PADDLE_POS_X+PADDLE_WIDTH))) then
+    if(not(to_integer(unsigned(to_stdlogicvector(V_ADR)))<PADDLE_TOP_SIG or to_integer(unsigned(to_stdlogicvector(V_ADR)))>(PADDLE_TOP_SIG+PADDLE_HEIGTH))) then
+      DRAW<='1';
+    end if;
+  end if;
+   end process;
+        
 PADDLE_TOP<=PADDLE_TOP_SIG;
 PADDLE_BOTTOM<=PADDLE_TOP_SIG+PADDLE_HEIGTH;
 
 --! Prozess zur Berechnung der letzten Bewegung
 MOVEMENT:process(CLK,RESET)
-	begin
-		if(CLK'event and CLK='1') then
-			if(PADDLE_TOP_SIG=PADDLE_TOP_SIG_LAST) then
-				COUNT<=COUNT+1;
-				if(COUNT>MOVE_REACTION) then
-					UP_SIG<='0';
-					DOWN_SIG<='0';
-					COUNT<=0;
-				end if;
-			else
-				COUNT<=0;
-				if(PADDLE_TOP_SIG<PADDLE_TOP_SIG_LAST) then
-					UP_SIG<='0';
-					DOWN_SIG<='1';
-				else 
-					UP_SIG<='1';
-					DOWN_SIG<='0';
-				end if;
-			end if;
-		end if;
-	end process;
+  begin
+  if(CLK'event and CLK='1') then
+    if(PADDLE_TOP_SIG=PADDLE_TOP_SIG_LAST) then
+      COUNT<=COUNT+1;
+      if(COUNT>MOVE_REACTION) then
+        UP_SIG<='0';
+        DOWN_SIG<='0';
+        COUNT<=0;
+      end if;
+    else
+      COUNT<=0;
+      if(PADDLE_TOP_SIG<PADDLE_TOP_SIG_LAST) then
+        UP_SIG<='0';
+        DOWN_SIG<='1';
+      else 
+        UP_SIG<='1';
+        DOWN_SIG<='0';
+      end if;
+    end if;
+  end if;
+  end process;
 
 --! Prozess zum Speichern der letzten Bewegung
 MOVEMENT_2:process(CLK,RESET)
   begin
-		
-        if(CLK'event and CLK='1') then
-          if(COUNT_2>2) then
-            PADDLE_TOP_SIG_LAST<=PADDLE_TOP_SIG;
-            COUNT_2<=0;
-          elsif( not( PADDLE_TOP_SIG_LAST=PADDLE_TOP_SIG) ) then
-            COUNT_2<=COUNT_2+1;
-          end if;
-          
+  if(CLK'event and CLK='1') then
+    if(COUNT_2>2) then
+      PADDLE_TOP_SIG_LAST<=PADDLE_TOP_SIG;
+      COUNT_2<=0;
+    elsif( not( PADDLE_TOP_SIG_LAST=PADDLE_TOP_SIG) ) then
+      COUNT_2<=COUNT_2+1;
+    end if;
   end if;
   end process;
                 

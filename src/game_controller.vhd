@@ -14,11 +14,11 @@ entity GAME_CONTROLLER is
     port(
         --! Takteingang
         CLK: in bit;
-        --! Eingang f�r das Paddle des 1. Spielers
+        --! Eingang für das Paddle des 1. Spielers
         STEP_PLAYER1: in bit;
         --! Richtungsbit des Paddles
 		LNOTR_PLAYER1: in bit;
-        --! Eingang f�r das Paddle des 2. Spielers
+        --! Eingang für das Paddle des 2. Spielers
         STEP_PLAYER2: in bit;
         --! Richtungsbit des Paddles
 		LNOTR_PLAYER2: in bit;        
@@ -48,9 +48,9 @@ signal DRAW_FIELD:std_logic;
 signal DRAW_SCORE_1:std_logic;
 --! Signal ob an der aktuellen Position sich die Punktzahlangabe des zweiten Spielers befindet
 signal DRAW_SCORE_2:std_logic;
---! Signal f�r die aktuelle X Position des Balles
+--! Signal für die aktuelle X Position des Balles
 signal BALL_X_CURRENT:integer range 0 to 1599;
---! Signal f�r die aktuelle Y Position des Balles
+--! Signal für die aktuelle Y Position des Balles
 signal BALL_Y_CURRENT: integer range 0 to 1199;
 --! Obere Position des ersten Spieler Paddles
 signal PADDLE_TOP_PLAYER_1:integer range 0 to 1199;
@@ -60,19 +60,19 @@ signal PADDLE_BOTTOM_PLAYER_1:integer range 0 to 1199;
 signal PADDLE_TOP_PLAYER_2:integer range 0 to 1199;
 --! Untere Position des zweiten Spieler Paddles
 signal PADDLE_BOTTOM_PLAYER_2:integer range 0 to 1199;
---! Signal f�r die Erh�hung des Punktestandes des ersten Spielers
+--! Signal für die Erhöhung des Punktestandes des ersten Spielers
 signal INCREASE_PLAYER_1:bit;
---! Signal f�r die Erh�hung des Punktestandes des zweiten Spielers
+--! Signal für die Erhöhung des Punktestandes des zweiten Spielers
 signal INCREASE_PLAYER_2:bit;
 --! Aktueller Punktestand des 1 Spielers
 signal SCORE_PLAYER_1:integer range 0 to 5;
 --! Aktueller Punktestand des 2 Spielers
 signal SCORE_PLAYER_2:integer range 0 to 5;
---! Setzt den Ball auf die erste Position zur�ck
+--! Setzt den Ball auf die erste Position zurück
 signal BALL_RESET_1: bit;
---! Setzt den Ball auf die zweite Position zur�ck
+--! Setzt den Ball auf die zweite Position zurück
 signal BALL_RESET_2: bit;
---! Setzt alle Objekt auf denn Ausgangzustand zur�ck
+--! Setzt alle Objekt auf denn Ausgangzustand zurück
 signal RESET_SIG: bit;
 --! Umgewandeltes Paddle_1_Up_Std signal
 signal PADDLE_1_UP: bit;
@@ -91,104 +91,77 @@ signal PADDLE_2_UP_STD: std_logic;
 --! Ist '1' wenn die letzte Bewegung des Paddles nach unten ging(zweiter Spieler)
 signal PADDLE_2_DOWN_STD: std_logic;
 
---! Zust�nde die der Gameautomat einnehmen kann
+--! Zustände die der Gameautomat einnehmen kann
 type ZUSTAENDE is(z0,z1,z2,z3);
 --! Aktueller Zustand des Spielautomat
 signal ZUSTAND:ZUSTAENDE;
---! N�chster Zustand des Spielautomat
+--! Nächster Zustand des Spielautomat
 signal FOLGE_Z:ZUSTAENDE;
 
---BALL Komponente
+--!BALL_OBJECT Komponente
 component BALL_OBJECT  
     generic(
-        BALL_TOP_LIMIT: integer range 0 to 1199:=199;
-        BALL_BOTTOM_LIMIT: integer range 0 to 1199:=1100;
-        BALL_LEFT_LIMIT: integer range 0 to 1599:=100;
-        BALL_RIGHT_LIMIT:integer range 0 to 1599:=1500;
-        BALL_X_START: integer range 0 to 1599:=110;
-        BALL_Y_START:integer range 0 to 1199:=650;
-        BALL_X_START_2: integer range 0 to 1599:=1490;
-        BALL_Y_START_2:integer range 0 to 1199:=650;
-        BALL_X_START_COUNT: natural:=200000;
-        BALL_Y_START_COUNT:natural :=200000;
-        BALL_SPEED_UP:natural := 10000;
-        BALL_SPEED_UP_Y:natural := 50000;
-        BALL_Y_START_COUNT_MAX:natural :=400000;
-        BALL_Y_START_COUNT_MIN:natural :=50000;
-        BALL_MIN_COUNT: natural := 40000;
-        BALL_DIMENSION:natural:=50
+                BALL_TOP_LIMIT: integer range 0 to 1199:=10;
+                BALL_BOTTOM_LIMIT: integer range 0 to 1199:=20;
+                BALL_LEFT_LIMIT: integer range 0 to 1599:=10;
+                BALL_RIGHT_LIMIT:integer range 0 to 1599:=20;
+                BALL_X_START: integer range 0 to 1599:=11;
+                BALL_Y_START:integer range 0 to 1199:=11;
+                BALL_X_START_2: integer range 0 to 1599:=11;
+                BALL_Y_START_2:integer range 0 to 1199:=11;
+                BALL_X_START_COUNT: natural:=1000;
+                BALL_Y_START_COUNT:natural :=5000;
+                BALL_SPEED_UP:natural := 150;
+                BALL_SPEED_UP_Y:natural := 150;
+                BALL_Y_START_COUNT_MAX:natural :=40000;
+                BALL_Y_START_COUNT_MIN:natural :=50000;
+                BALL_MIN_COUNT: natural := 50000;
+                BALL_DIMENSION:natural:=6
     );
     port(
-        --! Takteingang für die Bewegung des Balles
-        CLK: in bit;
-        --! Setzt den Ball auf die erste Start Position zurück 
-        RESET: in bit;
-        --! Setzt den Ball auf die zweite Start Position zurück 
-        RESET_2: in bit;
-        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
-        DRAW: out std_logic;
-        --! Vertikale Adresse 
-        V_ADR: in bit_vector(11 downto 0);
-        --! Horizontale Adresse
-        H_ADR: in bit_vector(11 downto 0);
-        --! Aktuelle X Position der Ball-Mitte
-        X_CURRENT:out integer range 0 to 1599;
-        --! Aktuelle Y Position der Ball-Mitte
-        Y_CURRENT:out integer range 0 to 1199;
-        PADDLE_1_UP: in bit;
-        PADDLE_1_DOWN: in bit;
-        PADDLE_2_UP: in bit;
-        PADDLE_2_DOWN: in bit
+                CLK: in bit;
+                RESET: in bit;
+                RESET_2: in bit;
+                DRAW: out std_logic;
+                V_ADR: in bit_vector(11 downto 0);
+                H_ADR: in bit_vector(11 downto 0);
+                X_CURRENT:out integer range 0 to 1599;
+                Y_CURRENT:out integer range 0 to 1199;
+                PADDLE_1_UP: in bit;
+                PADDLE_1_DOWN: in bit;
+                PADDLE_2_UP: in bit;
+                PADDLE_2_DOWN: in bit
     );
 end component BALL_OBJECT;
 
---PADDLE Komponente
+--!PADDLE_OBJECT Komponente
 component PADDLE_OBJECT is
     generic(
-        --! Oberes Limit des Spieler Paddles
-        PADDLE_TOP_LIMIT: integer range 0 to 1199:=199;
-        --! Untere Limit des Spieler Paddles
-        PADDLE_BOTTOM_LIMIT: integer range 0 to 1199:=1100;
-        --! Obere Position des Paddles bei einen Reset
-        PADDLE_TOP_START: integer range 0 to 1199:=500;
-        --! Vertikale Position des Paddles
-        PADDLE_POS_X:integer range 0 to 1599:=90;
-        --! Höhe des Paddles, in Pixel
-        PADDLE_HEIGTH: integer range 0 to 1199:=100;
-        --! Breite des Paddles, in Pixel
-        PADDLE_WIDTH:integer range 0 to 1599:=10;
-        --! Pixel Schrittweite bei einen Bewegung 
-        PADDLE_STEP_WIDTH: integer range 1 to 200:=10;
-        --! Verzögerung bei der erkennung der letzten Bewegungsrichtung
-        MOVE_REACTION: positive:=1000000
+                PADDLE_TOP_LIMIT: integer range 0 to 1199:=199;
+                PADDLE_BOTTOM_LIMIT: integer range 0 to 1199:=1100;
+                PADDLE_TOP_START: integer range 0 to 1199:=500;
+                PADDLE_POS_X:integer range 0 to 1599:=90;
+                PADDLE_HEIGTH: integer range 0 to 1199:=100;
+                PADDLE_WIDTH:integer range 0 to 1599:=10;
+                PADDLE_STEP_WIDTH: integer range 1 to 200:=10;
+                MOVE_REACTION: positive:=1000000
     );
     port(
-        --! Takteingang
-        CLK: in bit;    
-        --! L_NOTR gibt die Drehrichtung des Drehgebers an.
-        L_NOTR: in bit;
-        --! Mit jeder Flanke von Step wird eine Bewegung nach unten oder nach oben vollzogen
-        STEP: in bit;
-        --! Setzt das Paddle mit einer '1' zurück zur Startposition
-        RESET: in bit;
-        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
-        DRAW: out std_logic;
-        --! Vertikale Adresse 
-        V_ADR: in bit_vector(11 downto 0);
-        --! Horizontale Adresse
-        H_ADR: in bit_vector(11 downto 0);
-        --! Aktuelle obere Position des Paddles
-        PADDLE_TOP: out integer range 0 to 1199;
-        --! Aktuelle untere Position des Paddles
-        PADDLE_BOTTOM: out integer range 0 to 1199;
-        --! Die Letzte Bewegung des Paddles ging nach oben
-        UP_SIG: out std_logic;
-        --! Die Letzte Bewegung des Paddles ging nach unten
-        DOWN_SIG: out std_logic
+                CLK: in bit;    
+                L_NOTR: in bit;
+                STEP: in bit;
+                RESET: in bit;
+                DRAW: out std_logic;
+                V_ADR: in bit_vector(11 downto 0);
+                H_ADR: in bit_vector(11 downto 0);
+                PADDLE_TOP: out integer range 0 to 1199;
+                PADDLE_BOTTOM: out integer range 0 to 1199;
+                UP_SIG: out std_logic;
+                DOWN_SIG: out std_logic
     );
 end component PADDLE_OBJECT;
 
---FIELD Komponente
+--!FIELD_OBJECT Komponente
 component FIELD_OBJECT is
     generic(
         FIELD_TOP: integer range 0 to 1199:=189;
@@ -199,16 +172,13 @@ component FIELD_OBJECT is
         FIELD_WIDTH:natural:=3
     );
     port(
-        --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
         DRAW: out std_logic;
-        --! Vertikale Adresse 
         V_ADR: in bit_vector(11 downto 0);
-        --! Horizontale Adresse
         H_ADR: in bit_vector(11 downto 0)
     );
 end component FIELD_OBJECT;
 
---SCORE Komponente
+--!SCORE_OBJECT Komponente
 component SCORE_OBJECT is
   generic(
     MAX_POINT: integer range 0 to 14:=5;
@@ -219,20 +189,13 @@ component SCORE_OBJECT is
     DISTANCE: natural :=20
   );
   port(
-    --! Takteingang
-    CLK: in bit;
-    --! Setzt den Punktestand zurück auf 0
-    RESET: in bit;
-    --! Erhöht mit den nächsten Takt den Punktestand
-    INCREASE: in bit;
-    --! Gibt den aktuellen Punktestand zurück
-    CURRENT_SCORE: out integer range 0 to MAX_POINT;
-    --! Ausgang ob die aktuelle Position(V_ADR und H_ADR) ein Bildpunkt enthält 
-    DRAW: out std_logic;
-    --! Vertikale Adresse 
-    V_ADR: in bit_vector(11 downto 0);
-    --! Horizontale Adresse
-    H_ADR: in bit_vector(11 downto 0)
+        CLK: in bit;
+        RESET: in bit;
+        INCREASE: in bit;
+        CURRENT_SCORE: out integer range 0 to MAX_POINT;
+        DRAW: out std_logic;
+        V_ADR: in bit_vector(11 downto 0);
+        H_ADR: in bit_vector(11 downto 0)
   );
 end component SCORE_OBJECT;
 
@@ -243,27 +206,33 @@ for all: SCORE_OBJECT use entity work.SCORE_OBJECT(SCORE_OBJECT_ARC);
 
 begin
 
+--! Einziger Ball in der Szene
 BALL_OBJECT_INST: BALL_OBJECT 
   port map(CLK,RESET=>BALL_RESET_1,RESET_2=>BALL_RESET_2,DRAW=>DRAW_BALL,V_ADR=>V_ADR,H_ADR=>H_ADR,X_CURRENT=>BALL_X_CURRENT,
     Y_CURRENT=>BALL_Y_CURRENT,PADDLE_1_UP=>PADDLE_1_UP,PADDLE_1_DOWN=>PADDLE_1_DOWN,PADDLE_2_UP=>PADDLE_2_UP,PADDLE_2_DOWN=>PADDLE_2_DOWN);
-    
+
+--! Linker Spieler Balken
 PADDLE_OBJECT_INST_1: PADDLE_OBJECT 
   port map(CLK=>CLK,L_NOTR=>LNOTR_PLAYER1, STEP=>STEP_PLAYER1,RESET=>RESET_SIG,DRAW=>DRAW_PADDLE_1,V_ADR=>V_ADR,
     H_ADR=>H_ADR,PADDLE_TOP=>PADDLE_TOP_PLAYER_1,PADDLE_BOTTOM=>PADDLE_BOTTOM_PLAYER_1,UP_SIG=>PADDLE_1_UP_STD,
     DOWN_SIG=>PADDLE_1_DOWN_STD);
-    
+
+--! Rechter Spieler Balken
 PADDLE_OBJECT_INST_2: PADDLE_OBJECT 
   generic map(PADDLE_POS_X=>1500)
   port map(CLK=>CLK,L_NOTR=>LNOTR_PLAYER2,STEP=>STEP_PLAYER2,RESET=>RESET_SIG,DRAW=>DRAW_PADDLE_2,V_ADR=>V_ADR,
     H_ADR=>H_ADR,PADDLE_TOP=>PADDLE_TOP_PLAYER_2,PADDLE_BOTTOM=>PADDLE_BOTTOM_PLAYER_2,UP_SIG=>PADDLE_2_UP_STD,
     DOWN_SIG=>PADDLE_2_DOWN_STD);
-        
+
+--! Spielfeld Begrenzung
 FIELD_OBJECT_INST:FIELD_OBJECT
   port map(DRAW=>DRAW_FIELD,H_ADR=>H_ADR,V_ADR=>V_ADR);
-  
+
+--! Punktestand des linken Spielers
 SCORE_OBJECT_INST_1: SCORE_OBJECT
   port map(CLK=>CLK, RESET=>RESET_SIG,INCREASE=>INCREASE_PLAYER_1,CURRENT_SCORE=>SCORE_PLAYER_1,DRAW=>DRAW_SCORE_1,V_ADR=>V_ADR,H_ADR=>H_ADR);
  
+--! Punktestand des rechten Spielers
 SCORE_OBJECT_INST_2: SCORE_OBJECT
   generic map(START_X=>800)
   port map(CLK=>CLK, RESET=>RESET_SIG,INCREASE=>INCREASE_PLAYER_2,CURRENT_SCORE=>SCORE_PLAYER_2,DRAW=>DRAW_SCORE_2,V_ADR=>V_ADR,H_ADR=>H_ADR);
@@ -290,7 +259,7 @@ AUSGABE:process(ADR_CLK)
   end if;
   end process AUSGABE;
    
---! Hauptprozess f�r den Automaten
+--! Hauptprozess für den Automaten
 MAIN:process(CLK,RESET)
   begin
   if(RESET='1') then
@@ -300,7 +269,7 @@ MAIN:process(CLK,RESET)
   end if;
   end process MAIN;
 
---! �bergangsautomat von einen Spielzustand zum n�chsten
+--! Übergangsautomat von einen Spielzustand zum nächsten
 GAME_AUTOMATE:process(ZUSTAND,BALL_X_CURRENT)
   begin
     FOLGE_Z<=z0;
@@ -315,7 +284,7 @@ GAME_AUTOMATE:process(ZUSTAND,BALL_X_CURRENT)
         FOLGE_Z<=z1;
         RESET_SIG<='1';
         BALL_RESET_1<='1';
-      --Spiel läuft
+      --Spiel lÃ€uft
       when z1=>
         if(BALL_X_CURRENT=100 and (BALL_Y_CURRENT<PADDLE_TOP_PLAYER_1-15 or BALL_Y_CURRENT>PADDLE_BOTTOM_PLAYER_1+15)) then 
           FOLGE_Z<=z3;
