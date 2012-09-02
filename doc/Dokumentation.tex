@@ -27,9 +27,6 @@
 \makeindex
 \begin{document}
 
-\maketitle
-\newpage
-
 \tableofcontents
 \newpage
 
@@ -317,9 +314,12 @@ nicht verwendeten. Hierzu zählen noch weitere Entitys, wie ein Frequenzteiler u
 \label{Hardwarekonfiguration}
 Da eine Bedienung mittels Schiebeschalter, wie am Entwicklungsboard DE2 gegeben, recht nutzerunfreundlich ist und auch nicht dem Vorgaben des Originals entsprechen.
 Haben wir uns entschieden die Paddle Bewegungen mit einem Richtungscodierten Inkremental-Encoder zu steuern.
-\newline
 Dieser gibt auf zwei Ausgabespuren zwei Rechtecksignale aus, welche bei konstannter Rotationsbewegeung einen Tastgrad von 50/50 besitzen und eine Phasenlage von
-\(\pm\)90 Grad aufweisen, je nach Drehsinn. Mechanische Einzelheiten, sowie Ausgabesignalform und Pinbelegungen können dem Datenblatt unter 
+\(\pm\)90 Grad aufweisen, je nach Drehsinn.
+Hierbei ist zu erwähnen, dass die Paddle über eine Pause Taste verfügen, indem man auf den Drehknopf drückt. Weiterhin wird das Spiel über den
+Schalter SW0 auf dem Altera Board zurückgesetzt (Reset). 
+\newline
+ Mechanische Einzelheiten, sowie Ausgabesignalform und Pinbelegungen können dem Datenblatt unter 
 \footnote{http://www.bourns.com/data/global/pdfs/pec11.pdf} sowie als Dokument im Projektverzeichnis eingesehen werden.
 
 \subsection{Anschluss der Hardware}
